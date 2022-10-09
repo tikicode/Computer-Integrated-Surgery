@@ -9,11 +9,13 @@ class Frame {
     linalg::mat<double, 3, 3> R;
     linalg::vec<double, 3> p;
 
+    //constructor for Frame object 
     Frame(linalg::mat<double, 3, 3> rot, linalg::vec<double, 3> trans) {
         R = rot;
         p = trans;
     }
 
+    
     Frame composeFrame(Frame other);
     
     linalg::vec<double, 3> composeVec(linalg::vec<double, 3> v);
@@ -22,7 +24,5 @@ class Frame {
 
 
 }
-
-
 
 #endif
