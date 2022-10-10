@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/include/Eigen3/test/sparse_vector.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "sparse_vector_1"
+	}
+}

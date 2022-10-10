@@ -1,0 +1,16 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/include/Eigen3/test/is_same_dense.cpp"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"BuildOfficial"
+		],
+		"name" : "is_same_dense"
+	}
+}
