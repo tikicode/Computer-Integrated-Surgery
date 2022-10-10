@@ -10,7 +10,7 @@ class PointSet() {
 public:
 Matrix3f points;
 
-PointSet(Matrix3f p) {
+PointSet(MatrixXf p) {
     points = p;
 }
 
