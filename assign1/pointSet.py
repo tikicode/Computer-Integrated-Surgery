@@ -1,5 +1,5 @@
 import numpy as np
-
+import Frame
 
 class PointSet:
 
@@ -7,15 +7,35 @@ class PointSet:
         this.points = points
 
     def registration(A, B):
-        centeredA = A - A.mean(axis=0)
-        centeredB = B - B.mean(axis=0)
+        centeredA = A - np.mean(A.points, axis=1)
+        centeredB = B - np.mean(B.points, axis=1)
 
-        ua, sa, va = np.linalg.svd(centeredA)
-        ub, sb, vb = np.linalg.svd(centeredA)
+        H = np.dot(centeredA, centeredB.transpose())
 
-        R = np.dot(ub, ua.transpose())
+        u, s, vt = np.linalg.svd(H)
 
-        C = np.dot(R.transpose(), B)
-        M = np.dot(R.transpose(), A)
+        u = u.transpose()
+        vt = v.transpose()
 
-        
+        R = np.dot(vt, u)
+
+        # check to make sure not reflection
+        # if np.linalg.det( R ) < 0: 
+        #     R[:, 3] *= -1
+
+        p = centeredB - numpy.dot(R, centeredA)
+        return Frame(R, p)
+
+
+        # ua, sa, va = np.linalg.svd(centeredA)
+        # ub, sb, vb = np.linalg.svd(centeredA)
+
+        # R = np.dot(ub, ua.transpose())
+
+        # C = np.dot(R.transpose(), B)
+        # M = np.dot(R.transpose(), A)
+
+        # E = np.linalg.norm(M-C)
+        # if E > threshhold: idk what to do from here im very confused
+
+
