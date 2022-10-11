@@ -25,8 +25,3 @@ def probFour(calbody, calReading):
         cExp.append(Ci)
 
     return cExp
-
-
-
-
-        
