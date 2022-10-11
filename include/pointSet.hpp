@@ -17,8 +17,31 @@ PointSet(MatrixXf p) {
 Frame registration(PointSet other) {
     //callibrate center of gravity somehow?
     //do smtg w the means
-    PointSet((*this)*(other.transpose())) a;
-    JacobiSVD<Matrix3f, ComputeThinU | ComputeThinV> svd(a);
+    VectorXf meanA;
+    meanA.resize(this->rows());
+    for(int i = 0; i < this->rows(); i++){
+        float m = 0;
+        for(int j = 0; j < this->cols(); j++){
+            m+= (*this)(row, col);
+        }
+        meanA(i) = m/(this->cols());
+    }
+
+    VectorXf meanB;
+    meanB.resize(other.rows());
+    for(int i = 0; i < other.rows(); i++){
+        float m = 0;
+        for(int j = 0; j < other.cols(); j++){
+            m+= other(row, col);
+        }
+        meanB(i) = m/(other.cols());
+    }
+
+    MatrixXf centeredA = *this - meanA;
+    MatrixXf centeredB = other - meanB;
+    
+    PointSet((other)*(*this.transpose())) BAt;
+    JacobiSVD<Matrix3f, ComputeThinU | ComputeThinV> svd(BAt);
     PointSet(svd.matrixU()) U;
     U = U.transpose();
     Matrix3f s = svd.singularValues().asDiagonal();
