@@ -13,7 +13,7 @@ def pivot(ps_data, n):
     svd_p = np.zeros((3 * num_frames, 1))
 
     for i in range(num_frames):
-        frame_k = point_set.registration(ps_data[0][i], gj) 
+        frame_k = pointSet.registration(ps_data[0][i], gj) 
         cur_r, cur_p = frame_k.R, frame_k.p
         ti = 3*i
         svd_r(ti : ti + 2, 0 : 2) = cur_r
