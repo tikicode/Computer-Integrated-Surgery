@@ -1,4 +1,0 @@
-# Target labels
- BuildOfficial
-# Source files and their labels
-/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/include/Eigen3/test/geo_parametrizedline.cpp
