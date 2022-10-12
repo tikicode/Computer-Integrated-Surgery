@@ -33,3 +33,4 @@ def registration(A, B):
 
     p = centeredB - np.dot(R, centeredA)
     return fr.Frame(R, p)
+

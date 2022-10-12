@@ -66,3 +66,5 @@ def getDataOptPivot(fName):
         D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind:1 + ND + ind])))
         H.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind + ND:1 + ND + NH + ind])))
     return D, H
+
+
