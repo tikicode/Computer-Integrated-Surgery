@@ -1,6 +1,6 @@
 import scipy.linalg as la
 import numpy as np
-import point_set as ps
+import cis.point_set as ps
 
 
 def pivot(ps_data, n):

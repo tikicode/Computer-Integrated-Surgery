@@ -22,8 +22,10 @@ def prob_four(cal_body, cal_reading):
     for frame in range(len(D_points)):
         FD = ps.registration(d_points, D_points[frame])
         FA = ps.registration(a_points, A_points[frame])
-        Ci = FA.compose_vec(c_points)
-        Ci = (FD.invert()).compose_frame(Ci)
+        NF = FA.compose_frame(FD.invert())
+        print(NF.R.shape, NF.p.shape)
+        print(c_points.points)
+        Ci = ps.PointSet(NF.compose_transform(c_points.points))
         c_exp.append(Ci)
 
     return c_exp

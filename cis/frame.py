@@ -15,19 +15,18 @@ class Frame:
     returns: frame of F1 @ F2
     '''
     def compose_frame(self, other_frame):
-        vec = np.dot(self.R, other_frame.p)
-        vec += self.p
         mat = np.dot(self.R, other_frame.R)
+        vec = np.dot(self.R, other_frame.p) + other_frame.p
         return Frame(mat, vec)
 
     '''Method to perform a Frame transformation
     parameters: frame and a vector/pointset
     returns: new vector/pointset after transformation of the original vector/pointset
     '''
-    def compose_vec(self, v):
-        vec = np.dot(self.R, v)
-        vec += self.p
-        return vec
+    def compose_transform(self, points):
+        print(points.shape)
+        t_points = np.dot(self.R, points) + self.p
+        return t_points
 
     '''Method to calculate the inverse of a Frame'''
     def invert(self):

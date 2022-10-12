@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import point_set as ps
+import cis.point_set as ps
 
 '''Methods to read each type of file'''
 

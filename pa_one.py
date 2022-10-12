@@ -4,13 +4,14 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--data-dir", "-d", default=r"..\data", help="Input data directory")
-@click.option("--output-dir", "-o", default=r"..\pa_one\OUTPUT", help="Output directory")
-@click.option("--name", "-n", default="pa1-debug-a", help="Name of file")
-@click.option()
+@click.option("--data_dir", "data_dir", "-d", default="data", help="Input data directory")
+@click.option("--output_dir", "output_dir", "-o", default="OUTPUT", help="Output directory")
+@click.option("--name", "name", "-n", default="pa1-debug-a", help="Name of file")
 def main(data_dir, output_dir, name):
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
+    if not output_dir.exists():
+        output_dir.mkdir()
 
     cal_body = data_dir / f"{name}-calbody.txt"
     cal_reading = data_dir / f"{name}-calreadings.txt"
