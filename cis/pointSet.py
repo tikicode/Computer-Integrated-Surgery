@@ -77,7 +77,22 @@ class PointSet:
 
         for frame in range(NFrame):
             ind = frame*NG
-            G.append(PointSet(np.array(text[["xi", "yi", "zi"]])))
+            G.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ind:1+NG+ind])))
         return G
 
+    def getDataOptpivot(fName):
+        headers = pd.read_csv(fName, header=None, names=["Nd", "Nh", "Nf", np.nan]nrows=1)
+        #number of each
+        ND = int(text["Nd"][0])
+        NH = int(text["Nh"][0])
+        NFrame = int(text["Nf"][0])
+        text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+
+        D, H = []
+
+        for frame in range(NFrame):
+            ind = frame*(ND+NH)
+            D.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ind:1+ND+ind])))
+            H.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ind+ND:1+ND+NH+ind])))
+        return D, H
     
