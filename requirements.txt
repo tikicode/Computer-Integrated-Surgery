@@ -2,3 +2,4 @@ black
 pytest
 scipy
 numpy
+pylint
