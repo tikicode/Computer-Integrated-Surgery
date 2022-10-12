@@ -6,6 +6,10 @@ class PointSet:
     def __init__(self, points):
         this.points = points
 
+    '''Non-Iterative registration algorithm from Arun, Huang, and Blostein
+    parameters: two point sets
+    return: frame for the transformation
+    '''
     def registration(A, B):
         centeredA = A - np.mean(A.points, axis=1)
         centeredB = B - np.mean(B.points, axis=1)
@@ -38,7 +42,8 @@ class PointSet:
         # E = np.linalg.norm(M-C)
         # if E > threshhold: idk what to do from here im very confused
 
-
+    '''Methods to read each type of file'''
+    
     def getDataCalBody(fName):
         headers = pd.read_csv(fName, header=None, names=["Nd", "Na", "Nc", np.nan], nrows=1)
         #number of each
