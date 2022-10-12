@@ -9,17 +9,18 @@ def probFour(calbody, calReading):
     # calread = open(calReading, "r")
     # read file method
 
-
-    dPoints = calbody d points
-    aPoints = calbody a points
-    cPoints = calbody c points
-    Frames = calReading frame
+    calbod = ps.getDataCalBody(calbody)
+    calread = ps.getDataCalReading(calReading)
+    dPoints = calbod[0]
+    aPoints = calbod[1]
+    cPoints = calbod[2]
+    DPoints = calread[0]
+    APoints = calread[1]
+    CPoints = calread[2]
     cExp = []
-    for frame in Frames :
-        DPoints = calReading at given frame index d points
-        APoints = calReading at given frame index a points
-        FD = registration(dPoints, DPoints)
-        FA = registration(aPoints, APoints)
+    for frame in range(len(DPoints)) :
+        FD = registration(dPoints, DPoints[frame])
+        FA = registration(aPoints, APoints[frame])
         Ci = FA.composeVec(cPoints)
         Ci = (FD.invert()).composeFrame(Ci)
         cExp.append(Ci)
