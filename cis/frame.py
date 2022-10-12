@@ -3,7 +3,9 @@ import numpy as np
 
 class Frame:
 
-    '''Constructor to create a Frame object which has Rotation R and translation p'''
+    """
+    Constructor to create a Frame object which has Rotation R and translation p
+    """
     def __init__(self, R, p):
         self.R = R
         self.p = p
@@ -12,23 +14,23 @@ class Frame:
     parameters: two frames
     returns: frame of F1 @ F2
     '''
-    def composeFrame(self, otherFrame):
-        vec = np.dot(self.R, otherFrame.p)
+    def compose_frame(self, other_frame):
+        vec = np.dot(self.R, other_frame.p)
         vec += self.p
-        mat = np.dot(self.R, otherFrame.R)
+        mat = np.dot(self.R, other_frame.R)
         return Frame(mat, vec)
 
     '''Method to perform a Frame transformation
     parameters: frame and a vector/pointset
     returns: new vector/pointset after transformation of the original vector/pointset
     '''
-    def composeVec(self, v):
+    def compose_vec(self, v):
         vec = np.dot(self.R, v)
         vec += self.p
         return vec
 
     '''Method to calculate the inverse of a Frame'''
     def invert(self):
-        newR = np.linalg.inv(self.R)
-        newP = np.dot(-1 * newR, self.p)
-        return Frame(newR, newP)
+        new_r = np.linalg.inv(self.R)
+        new_p = np.dot(-1 * new_r, self.p)
+        return Frame(new_r, new_r)
