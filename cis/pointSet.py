@@ -49,7 +49,7 @@ class PointSet:
         return (PointSet(np.array(text[["xi", "yi", "zi"]][1:1 + ND])), PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND : 1 + ND + NA])), PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA :])))
 
     def getDataCalReading(fName):
-        headers = pd.read_csv(fName, header=None, names=["Nd", "Na", "Nc", "Nf", np.nan])
+        headers = pd.read_csv(fName, header=None, names=["Nd", "Na", "Nc", "Nf", np.nan]nrows=1)
         #number of each
         ND = int(text["Nd"][0])
         NA = int(text["Na"][0])
@@ -65,3 +65,19 @@ class PointSet:
             A.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ND+ind: 1+ND+NA+ind])))
             C.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ND+NA+NC+ind:])))
         return D, A, C
+
+    def getDataEmpivot(fName):
+        headers = pd.read_csv(fName, header=None, names=["Ng", "Nf", np.nan]nrows=1)
+        #number of each
+        NG = int(text["Ng"][0])
+        NFrame = int(text["Nf"][0])
+        text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+
+        G = []
+
+        for frame in range(NFrame):
+            ind = frame*NG
+            G.append(PointSet(np.array(text[["xi", "yi", "zi"]])))
+        return G
+
+    
