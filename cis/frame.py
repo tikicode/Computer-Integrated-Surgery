@@ -1,4 +1,6 @@
 import numpy as np
+
+
 class Frame:
     def __init__(self, R, p):
         self.R = R
@@ -11,11 +13,11 @@ class Frame:
         return Frame(mat, vec)
 
     def composeVec(self, v):
-        vec = np.dot(self.R,v)
-        vec+=self.p
+        vec = np.dot(self.R, v)
+        vec += self.p
         return vec
-    
+
     def invert(self):
         newR = np.linalg.inv(self.R)
-        newP = np.dot(-1*newR, self.p)
+        newP = np.dot(-1 * newR, self.p)
         return Frame(newR, newP)

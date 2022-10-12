@@ -1,12 +1,14 @@
 import numpy as np
+import pandas as pd
 import frame
+
 
 class PointSet:
 
     def __init__(self, points):
-        this.points = points
+        self.points = points
 
-    def registration(A, B):
+    def registration(self, A, B) -> frame.Frame:
         centeredA = A - np.mean(A.points, axis=1)
         centeredB = B - np.mean(B.points, axis=1)
 
@@ -15,17 +17,16 @@ class PointSet:
         u, s, vt = np.linalg.svd(H)
 
         u = u.transpose()
-        vt = v.transpose()
+        vt = vt.transpose()
 
         R = np.dot(vt, u)
 
         # check to make sure not reflection
-        # if np.linalg.det( R ) < 0: 
+        # if np.linalg.det( R ) < 0:
         #     R[:, 3] *= -1
 
-        p = centeredB - numpy.dot(R, centeredA)
-        return Frame(R, p)
-
+        p = centeredB - np.dot(R, centeredA)
+        return frame.Frame(R, p)
 
         # ua, sa, va = np.linalg.svd(centeredA)
         # ub, sb, vb = np.linalg.svd(centeredA)
@@ -38,19 +39,20 @@ class PointSet:
         # E = np.linalg.norm(M-C)
         # if E > threshhold: idk what to do from here im very confused
 
-
     def getDataCalBody(fName):
         headers = pd.read_csv(fName, header=None, names=["Nd", "Na", "Nc", np.nan], nrows=1)
-        #number of each
+        # number of each
         ND = int(text["Nd"][0])
         NA = int(text["Na"][0])
         NC = int(text["Nc"][0])
         text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-        return (PointSet(np.array(text[["xi", "yi", "zi"]][1:1 + ND])), PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND : 1 + ND + NA])), PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA :])))
+        return (PointSet(np.array(text[["xi", "yi", "zi"]][1:1 + ND])),
+                PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND: 1 + ND + NA])),
+                PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA:])))
 
     def getDataCalReading(fName):
         headers = pd.read_csv(fName, header=None, names=["Nd", "Na", "Nc", "Nf", np.nan])
-        #number of each
+        # number of each
         ND = int(text["Nd"][0])
         NA = int(text["Na"][0])
         NC = int(text["Nc"][0])
@@ -60,8 +62,8 @@ class PointSet:
         D, A, C = []
 
         for frame in range(NFrame):
-            ind = frame*(ND+NA+NC)
-            D.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ind: 1+ND+ind])))
-            A.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ND+ind: 1+ND+NA+ind])))
-            C.append(PointSet(np.array(text[["xi", "yi", "zi"]][1+ND+NA+NC+ind:])))
+            ind = frame * (ND + NA + NC)
+            D.append(PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind: 1 + ND + ind])))
+            A.append(PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + ind: 1 + ND + NA + ind])))
+            C.append(PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA + NC + ind:])))
         return D, A, C
