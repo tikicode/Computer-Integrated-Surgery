@@ -17,7 +17,6 @@ class PointSet:
 def registration(A, B):
     centeredA = A.points - np.mean(A.points, axis=1, keepdims=True)
     centeredB = B.points - np.mean(B.points, axis=1, keepdims=True)
-
     H = np.dot(centeredA, centeredB.transpose())
 
     u, s, vt = np.linalg.svd(H)

@@ -13,16 +13,11 @@ def prob_four(cal_body, cal_reading):
 
     d_points, a_points, c_points = io.getDataCalBody(cal_body)
     D_points, A_points, C_points = io.getDataCalReading(cal_reading)
-    print(d_points.points)
-    print(a_points.points)
-    print(c_points.points)
     c_exp = []
     for frame in range(len(D_points)):
         FD = ps.registration(d_points, D_points[frame])
         FA = ps.registration(a_points, A_points[frame])
         NF = FA.compose_frame(FD.invert())
-        print(NF.R.shape, NF.p.shape)
-        print(c_points.points)
         Ci = ps.PointSet(NF.compose_transform(c_points.points))
         c_exp.append(Ci)
 

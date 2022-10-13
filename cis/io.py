@@ -12,9 +12,10 @@ def getDataCalBody(fName):
     NA = int(headers["Na"][0])
     NC = int(headers["Nc"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-    return (ps.PointSet(np.array(text[["xi", "yi", "zi"]][0:0 + ND])),
-            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND: ND + NA])),
-            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA:])))
+
+    return (ps.PointSet(np.array(text[["xi", "yi", "zi"]][0:0 + ND]).T),
+            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND: ND + NA]).T),
+            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA:]).T))
 
 
 def getDataCalReading(fName):
@@ -32,9 +33,9 @@ def getDataCalReading(fName):
         # D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind: 1 + ND + ind])))
         # A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + ind: 1 + ND + NA + ind])))
         # C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA + NC + ind:])))
-        D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ind: ND + ind])))
-        A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind])))
-        C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + NC + ind:])))
+        D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ind: ND + ind]).T))
+        A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind]).T))
+        C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + NC + ind:]).T))
     return D, A, C
 
 
