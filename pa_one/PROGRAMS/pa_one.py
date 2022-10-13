@@ -39,7 +39,7 @@ def write_output(c_exp, probe, beacon, output_dir, name):
         The solution to problem 6, position of the optical tracker beacon in EM tracker coordinates for each
         observation frame of optical tracker data
     """
-    f = open(f"{output_dir}/{name}-output-1", 'w')
+    f = open(f"{output_dir}/{name}-output-1.txt", 'w')
     f.write('{0}, {1}, {2}\n'.format(len(c_exp[0].points[0]), len(c_exp), name))
     f.write('{0},   {1},   {2}\n'.format(format(probe[0], '.2f'), format(probe[1], '.2f'), format(probe[2], '.2f')))
     f.write('{0},   {1},   {2}\n'.format(format(beacon[0], '.2f'), format(beacon[1], '.2f'), format(beacon[2], '.2f')))

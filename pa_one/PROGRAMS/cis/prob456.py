@@ -6,6 +6,7 @@ from .file_rw import getDataEMPivot
 from .file_rw import getDataCalBody
 from .file_rw import getDataCalReading
 
+
 def prob_four(cal_body, cal_reading):
     """Method solving problem 4
 
@@ -48,7 +49,7 @@ def prob_five(em_pivot):
         The position of the EM probe relative to the EM tracker base
     """
     em_data = getDataEMPivot(em_pivot)
-    return pivot(em_data)[0][0:3].reshape(3,)
+    return pivot(em_data)[0][0:3].reshape(3, )
 
 
 def prob_six(opt_pivot, cal_body):
@@ -72,4 +73,4 @@ def prob_six(opt_pivot, cal_body):
     FD = registration(opt_D[0], d_points)
     for i in range(len(opt_H)):
         opt_H[i] = PointSet(FD.compose_transform(opt_H[i].points))
-    return pivot(opt_H)[0][0:3].reshape(3,)
+    return pivot(opt_H)[0][0:3].reshape(3, )
