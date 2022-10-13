@@ -11,13 +11,11 @@ def prob_four(cal_body, cal_reading):
     # cal_read = open(calReading, "r")
     # read file method
 
-    cal_bod = io.getDataCalBody(cal_body)
-    cal_read = io.getDataCalReading(cal_reading)
-    d_points = cal_bod[0]
-    a_points = cal_bod[1]
-    c_points = cal_bod[2]
-    D_points = cal_read[0]
-    A_points = cal_read[1]
+    d_points, a_points, c_points = io.getDataCalBody(cal_body)
+    D_points, A_points, C_points = io.getDataCalReading(cal_reading)
+    print(d_points.points)
+    print(a_points.points)
+    print(c_points.points)
     c_exp = []
     for frame in range(len(D_points)):
         FD = ps.registration(d_points, D_points[frame])
@@ -38,11 +36,9 @@ def prob_five(em_pivot):
 
 
 def prob_six(opt_pivot, cal_body, cal_reading):
-    opt = io.getDataOptPivot(opt_pivot)
-    cal_bod = io.getDataCalBody(cal_body)
-    cal_read = io.getDataCalReading(cal_reading)
-    d_points = cal_bod[0]
-    D_points = cal_read[0]
+    opt_D, opt_H = io.getDataOptPivot(opt_pivot)
+    d_points, a_points, c_points = io.getDataCalBody(cal_body)
+    D_points, A_points, C_points = io.getDataCalReading(cal_reading)
     FD = fr.Frame()
     for frame in range(len(D_points)):
         FD = ps.registration(d_points, D_points[frame])

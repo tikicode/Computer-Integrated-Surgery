@@ -12,9 +12,9 @@ def getDataCalBody(fName):
     NA = int(headers["Na"][0])
     NC = int(headers["Nc"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-    return (ps.PointSet(np.array(text[["xi", "yi", "zi"]][1:1 + ND])),
-            ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND: 1 + ND + NA])),
-            ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA:])))
+    return (ps.PointSet(np.array(text[["xi", "yi", "zi"]][0:0 + ND])),
+            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND: ND + NA])),
+            ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA:])))
 
 
 def getDataCalReading(fName):
@@ -25,14 +25,16 @@ def getDataCalReading(fName):
     NC = int(headers["Nc"][0])
     NFrame = int(headers["Nf"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-
     D, A, C = [], [], []
 
     for frame in range(NFrame):
         ind = frame * (ND + NA + NC)
-        D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind: 1 + ND + ind])))
-        A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + ind: 1 + ND + NA + ind])))
-        C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA + NC + ind:])))
+        # D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind: 1 + ND + ind])))
+        # A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + ind: 1 + ND + NA + ind])))
+        # C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ND + NA + NC + ind:])))
+        D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ind: ND + ind])))
+        A.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind])))
+        C.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + NC + ind:])))
     return D, A, C
 
 
@@ -66,5 +68,3 @@ def getDataOptPivot(fName):
         D.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind:1 + ND + ind])))
         H.append(ps.PointSet(np.array(text[["xi", "yi", "zi"]][1 + ind + ND:1 + ND + NH + ind])))
     return D, H
-
-
