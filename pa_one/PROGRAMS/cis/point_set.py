@@ -1,5 +1,5 @@
 import numpy as np
-from frame import Frame
+from .frame import Frame
 
 
 class PointSet:

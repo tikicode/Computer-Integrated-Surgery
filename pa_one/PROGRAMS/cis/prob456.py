@@ -1,11 +1,10 @@
-from point_set import PointSet
-from point_set import registration
-from pivot_cal import pivot
-from file_rw import getDataOptPivot
-from file_rw import getDataEMPivot
-from file_rw import getDataCalBody
-from file_rw import getDataCalReading
-
+from .point_set import PointSet
+from .point_set import registration
+from .pivot_cal import pivot
+from .file_rw import getDataOptPivot
+from .file_rw import getDataEMPivot
+from .file_rw import getDataCalBody
+from .file_rw import getDataCalReading
 
 def prob_four(cal_body, cal_reading):
     """Method solving problem 4

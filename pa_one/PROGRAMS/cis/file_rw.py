@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from point_set import PointSet
+from .point_set import PointSet
 
 
 def getDataCalBody(fName):
