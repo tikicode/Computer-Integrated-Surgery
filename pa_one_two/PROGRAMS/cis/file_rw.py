@@ -13,7 +13,7 @@ def getDataCalBody(fName):
 
     Returns
     _________
-    PointSet, PointSet, PointSet
+    List of PointSet
          Point clouds representing the optical markers on the EM base, optical markers on the calibration object,
          and the EM markers on the calibration object respectively
     """
@@ -38,7 +38,7 @@ def getDataCalReading(fName):
 
     Returns
     _________
-    PointSet, PointSet, PointSet
+    List of PointSet
         Point clouds representing the optical markers on the EM base, optical markers on the calibration object,
         and the EM markers on the calibration object respectively
     """
@@ -69,7 +69,7 @@ def getDataEMPivot(fName):
 
     Returns
     _________
-    PointSet
+    List of PointSet
         Point cloud representing the EM sensor data for the probe
     """
     headers = pd.read_csv(fName, header=None, names=["Ng", "Nf", np.nan], nrows=1)
@@ -96,7 +96,7 @@ def getDataOptPivot(fName):
 
     Returns
     _________
-    PointSet, PointSet
+    List of PointSet
         Point clouds representing optical markers on the EM base and optical markers on the probe respectively
     """
     headers = pd.read_csv(fName, header=None, names=["Nd", "Nh", "Nf", np.nan], nrows=1)
@@ -116,7 +116,7 @@ def getDataOptPivot(fName):
 
 
 def getDataCTFids(fName):
-    """Method for collecting optical sensor data
+    """Method for collecting CT fiducial coordinates
 
     Parameters
     _________
@@ -126,16 +126,66 @@ def getDataCTFids(fName):
     Returns
     _________
     PointSet, PointSet
-        Point clouds representing optical markers on the EM base and optical markers on the probe respectively
+        Point clouds representing coordinates of the CT fiducials
     """
-    headers = pd.read_csv(fName, header=None, names=["Nf", np.nan], nrows=1)
+    headers = pd.read_csv(fName, header=None, names=["Nb", np.nan], nrows=1)
     # number of each
-    NF = int(headers["Nf"][0])
+    NB = int(headers["Nb"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
 
-    Bi = []
-
-    for frame in range(NF):
-        ind = frame
-        Bi.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + ind]).T))
+    Bi = [PointSet(np.array(text[["xi", "yi", "zi"]][:]).T)]
     return Bi
+
+
+def getDataEMFids(fName):
+    """Method for collecting data in which the probe is in contact with corresponding CT fiducials
+
+    Parameters
+    _________
+    fName : str
+        The name of the data file
+
+    Returns
+    _________
+    List of PointSet
+        Point cloud representing EM markers on the probe and corresponding CT fiducial markers
+    """
+    headers = pd.read_csv(fName, header=None, names=["Ng", "Nb", np.nan], nrows=1)
+    # number of each
+    NG = int(headers["Ng"][0])
+    NB = int(headers["Nb"][0])
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+
+    G = []
+
+    for frame in range(NB):
+        ind = frame * NG
+        G.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind]).T))
+    return G
+
+
+def getDataEMNav(fName):
+    """Method for collecting data defining test points of the probe tip
+
+    Parameters
+    _________
+    fName : str
+        The name of the data file
+
+    Returns
+    _________
+    List of PointSet
+        Point cloud describing test points of the probe that need to be translated to CT coordinates
+    """
+    headers = pd.read_csv(fName, header=None, names=["Ng", "Nf", np.nan], nrows=1)
+    # number of each
+    NG = int(headers["Ng"][0])
+    NFrames = int(headers["Nf"][0])
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+
+    G = []
+
+    for frame in range(NFrames):
+        ind = frame * NG
+        G.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind]).T))
+    return G
