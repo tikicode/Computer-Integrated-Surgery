@@ -4,12 +4,12 @@ from .point_set import PointSet
 
 
 def getDataCalBody(fName):
-    """Method for collecting calibration object data
+    """Method for collecting calibration object DATA
 
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
@@ -34,7 +34,7 @@ def getDataCalReading(fName):
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
@@ -65,12 +65,12 @@ def getDataEMPivot(fName):
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
     List of PointSet
-        Point cloud representing the EM sensor data for the probe
+        Point cloud representing the EM sensor DATA for the probe
     """
     headers = pd.read_csv(fName, header=None, names=["Ng", "Nf", np.nan], nrows=1)
     # number of each
@@ -87,12 +87,12 @@ def getDataEMPivot(fName):
 
 
 def getDataOptPivot(fName):
-    """Method for collecting optical sensor data
+    """Method for collecting optical sensor DATA
 
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
@@ -121,7 +121,7 @@ def getDataCTFids(fName):
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
@@ -138,12 +138,12 @@ def getDataCTFids(fName):
 
 
 def getDataEMFids(fName):
-    """Method for collecting data in which the probe is in contact with corresponding CT fiducials
+    """Method for collecting DATA in which the probe is in contact with corresponding CT fiducials
 
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________
@@ -165,12 +165,12 @@ def getDataEMFids(fName):
 
 
 def getDataEMNav(fName):
-    """Method for collecting data defining test points of the probe tip
+    """Method for collecting DATA defining test points of the probe tip
 
     Parameters
     _________
     fName : str
-        The name of the data file
+        The name of the DATA file
 
     Returns
     _________

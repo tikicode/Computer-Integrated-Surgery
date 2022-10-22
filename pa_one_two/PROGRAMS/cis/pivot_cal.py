@@ -9,7 +9,7 @@ def pivot(ps_data):
     Parameters
     _________
     ps_data : PointSet
-        The point cloud of calibration data
+        The point cloud of calibration DATA
 
     Returns
     _________

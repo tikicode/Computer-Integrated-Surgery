@@ -20,7 +20,7 @@ def prob_four(cal_body, cal_reading):
     Returns
     _________
     c_exp : np.ndarray
-        The expected values for the distortion calibration data
+        The expected values for the distortion calibration DATA
     """
     d_points, a_points, c_points = getDataCalBody(cal_body)
     D_points, A_points, C_points = getDataCalReading(cal_reading)
@@ -66,7 +66,7 @@ def prob_six(opt_pivot, cal_body):
     _________
     np.ndarray
         The solution to problem 6, position of the optical tracker beacon in EM tracker coordinates for each
-        observation frame of optical tracker data
+        observation frame of optical tracker DATA
     """
     opt_D, opt_H = getDataOptPivot(opt_pivot)
     d_points, a_points, c_points = getDataCalBody(cal_body)

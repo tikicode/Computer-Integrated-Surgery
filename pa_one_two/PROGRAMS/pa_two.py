@@ -3,9 +3,9 @@ from pathlib import Path
 
 
 @click.command()
-@click.option("--data_dir", "data_dir", "-d", default="data/PA2", help="Input data directory")
+@click.option("--data_dir", "data_dir", "-d", default="DATA/PA2", help="Input DATA directory")
 @click.option("--output_dir", "output_dir", "-o",
-              default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one/OUTPUT/PA2",
+              default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one_two/OUTPUT/PA2",
               help="Output directory")
 @click.option("--name", "name", "-n", default="pa2-debug-a", help="Name of file")
 def main(data_dir, output_dir, name):
@@ -29,12 +29,12 @@ def write_output(c_exp, probe, beacon, output_dir, name):
     Parameters
     _________
     c_exp : np.ndarray
-        The solution to problem 4, expected values for a distortion calibration data set
+        The solution to problem 4, expected values for a distortion calibration DATA set
     probe : np.ndarray
         The solution to problem 5, position of the EM probe relative to the EM tracker base
     beacon : np.ndarray
         The solution to problem 6, position of the optical tracker beacon in EM tracker coordinates for each
-        observation frame of optical tracker data
+        observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-1.txt", 'w')
     f.write('{0}, {1}, {2}\n'.format(len(c_exp[0].points[0]), len(c_exp), name))
