@@ -22,9 +22,12 @@ def prob_four(cal_body, cal_reading):
     c_exp : np.ndarray
         The expected values for the distortion calibration DATA
     """
+    #get the points from the input files
     d_points, a_points, c_points = getDataCalBody(cal_body)
     D_points, A_points, C_points = getDataCalReading(cal_reading)
     c_exp = []
+    
+    #iterate through each of the frames and compute Ci to append to C_exp
     for frame in range(len(D_points)):
         FD = registration(d_points, D_points[frame])
         FA = registration(a_points, A_points[frame])
