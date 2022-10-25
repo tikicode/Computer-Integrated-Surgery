@@ -1,6 +1,6 @@
 import .point_set as ps
 import .file_rw as read 
-import .prob456 as prob
+import .pa2probs as prob
 import .pivot_cal as pivot
 import numpy as np
 
@@ -9,22 +9,21 @@ import numpy as np
 def distortion(cal_body, cal_reading, empivot):
 
 
-    #d_points, a_points, c_points = read.getDataCalBody(cal_body)
-    D_points, A_points, C_points = read.getDataCalReading(cal_read)
     
+    c_exp = prob.prob_one(cal_body, cal_reading)
 
     #find min and max q
     minq, maxq = []
-    minq[0] = np.min(C_points[0])
-    minq[1] = np.min(C_points[1])
-    minq[2] = np.min(C_points[2])
-    maxq[0] = np.max(C_points[0])
-    maxq[1] = np.max(C_points[1])
-    maxq[2] = np.max(C_points[2])
+    minq[0] = np.min(c_exp[0])
+    minq[1] = np.min(c_exp[1])
+    minq[2] = np.min(c_exp[2])
+    maxq[0] = np.max(c_exp[0])
+    maxq[1] = np.max(c_exp[1])
+    maxq[2] = np.max(c_exp[2])
 
     #get u using sensor vals
-    num_points = np.shape(C_points[0])
-    u = scaleToBox(C_points, minq, maxq, num_points)
+    num_points = np.shape(c_exp[0])
+    u = scaleToBox(c_exp, minq, maxq, num_points)
     
     #get Fijk(u)
     N=5
@@ -34,7 +33,7 @@ def distortion(cal_body, cal_reading, empivot):
             for k in range(N):
                 #use bernstein to get F
 
-    p = Fijk.dot(C_points)
+    p = Fijk.dot(c_exp)
     return p
 
     
