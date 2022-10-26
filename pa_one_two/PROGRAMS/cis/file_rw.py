@@ -177,15 +177,4 @@ def getDataEMNav(fName):
     List of PointSet
         Point cloud describing test points of the probe that need to be translated to CT coordinates
     """
-    headers = pd.read_csv(fName, header=None, names=["Ng", "Nf", np.nan], nrows=1)
-    # number of each
-    NG = int(headers["Ng"][0])
-    NFrames = int(headers["Nf"][0])
-    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-
-    G = []
-
-    for frame in range(NFrames):
-        ind = frame * NG
-        G.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind]).T))
-    return G
+    return getDataEMFids(fName)

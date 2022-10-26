@@ -6,10 +6,7 @@ from .pivot_cal import pivot
 import numpy as np
 
 
-def distortion(cal_body, cal_reading, empivot):
-    c = getDataCalReading(cal_reading)
-    c_exp = prob_one(cal_body, cal_reading)
-
+def distortion(c, c_exp, em_pivot):
     num_frames = len(c_exp)
     num_points = len(c_exp[0].points)
 
@@ -34,16 +31,15 @@ def distortion(cal_body, cal_reading, empivot):
 
     F_ijk = F(u, 5)
     coefficient = coefficients(F_ijk, c_exp_scaled)
-    correction = correct_distortion(empivot, coefficient, min_q, max_q, min_c_exp, max_c_exp)
-    pivot_em_dist = pivot(correction)
-    return pivot_em_dist
+    correction = correct_distortion(em_pivot, coefficient, min_q, max_q, min_c_exp, max_c_exp)
+    pivot_output = pivot(correction)
+    return pivot_output, coefficient, min_q, max_q, min_c_exp, max_c_exp
 
 
-def correct_distortion(file_name, coefficient, min_q, max_q, min_c_exp, max_c_exp):
-    em_pivot = getDataEMPivot(file_name)
+def correct_distortion(data, coefficient, min_q, max_q, min_c_exp, max_c_exp):
     corrected = []
-    for i in range(len(em_pivot)):
-        u = scaleToBox(em_pivot[i].points, min_q, max_q, len(em_pivot[i].points))
+    for i in range(len(data)):
+        u = scaleToBox(data[i].points, min_q, max_q, len(data[i].points))
         F_ijk = F(u, 5)
         corrected.append(F_ijk @ coefficient)
         for j in range(len(corrected[i])):

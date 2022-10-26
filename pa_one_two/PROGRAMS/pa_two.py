@@ -23,7 +23,7 @@ def main(data_dir, output_dir, name):
     opt_pivot = data_dir / f"{name}-optpivot.txt"
 
 
-def write_output(c_exp, probe, beacon, output_dir, name):
+def write_output_one():
     """Method for writing file outputs
 
     Parameters
