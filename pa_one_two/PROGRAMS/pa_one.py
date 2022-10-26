@@ -8,7 +8,7 @@ import cis.prob456 as prob
 @click.command()
 @click.option("--data_dir", "data_dir", "-d", default="DATA/PA1", help="Input DATA directory")
 @click.option("--output_dir", "output_dir", "-o",
-              default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one_two/OUTPUT/PA2",
+              default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one_two/OUTPUT/PA1",
               help="Output directory")
 @click.option("--name", "name", "-n", default="pa1-debug-a", help="Name of file")
 def main(data_dir, output_dir, name):

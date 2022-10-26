@@ -55,7 +55,7 @@ def getDataCalReading(fName):
         ind = frame * (ND + NA + NC)
         D.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind: ND + ind]).T))
         A.append(PointSet(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind]).T))
-        C.append(PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + NC + ind:]).T))
+        C.append(PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + ind: NC + ND + NA + ind]).T))
     return D, A, C
 
 

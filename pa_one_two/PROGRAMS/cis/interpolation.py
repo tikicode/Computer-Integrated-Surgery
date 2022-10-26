@@ -1,18 +1,15 @@
-from .point_set import PointSet as ps
-from .file_rw import getDataCalReading, getDataEMPivot
-from .file_rw import getDataCalBody
-from .pa2probs import prob_one
 from .pivot_cal import pivot
 import numpy as np
 
+from .point_set import PointSet
 
-def distortion(c, c_exp, em_pivot):
+
+def distortion(c, c_exp, em_pivot, deg):
     num_frames = len(c_exp)
     num_points = len(c_exp[0].points)
 
     c_new = c[0].points
     c_exp_new = c_exp[0].points
-
     for i in range(1, num_frames):
         c_new = np.concatenate((c_new, c[i].points), axis=0)
         c_exp_new = np.concatenate((c_exp_new, c_exp[i].points), axis=0)
@@ -29,34 +26,38 @@ def distortion(c, c_exp, em_pivot):
     u = scaleToBox(c_new, min_q, max_q, num_points)
     c_exp_scaled = scaleToBox(c_exp_new, min_c_exp, max_c_exp, num_points)
 
-    F_ijk = F(u, 5)
+    F_ijk = F(u, deg)
     coefficient = coefficients(F_ijk, c_exp_scaled)
-    correction = correct_distortion(em_pivot, coefficient, min_q, max_q, min_c_exp, max_c_exp)
+    correction = correct_distortion(em_pivot, coefficient, min_q, max_q, min_c_exp, max_c_exp, 5)
     pivot_output = pivot(correction)
     return pivot_output, coefficient, min_q, max_q, min_c_exp, max_c_exp
 
 
-def correct_distortion(data, coefficient, min_q, max_q, min_c_exp, max_c_exp):
+def correct_distortion(data, coefficient, min_q, max_q, min_c_exp, max_c_exp, deg):
     corrected = []
+    for i in range(len(data)):
+        corrected.append(data[i])
+    size = len(corrected[0].points[0])
     for i in range(len(data)):
         u = scaleToBox(data[i].points, min_q, max_q, len(data[i].points))
         F_ijk = F(u, 5)
-        corrected.append(F_ijk @ coefficient)
-        for j in range(len(corrected[i])):
+        corrected[i].points = np.dot(F(scaleToBox(corrected[i].points, min_q, max_q, size), deg), coefficient)
+        for j in range(len(corrected[0].points)):
             for k in range(3):
-                corrected[i].points[j][k] = corrected[i].points[j][k] * (max_c_exp[k] - min_c_exp[k]) + min_c_exp[k]
+                corrected[i].points[k][j] = corrected[i].points[k][j] * (max_c_exp[k] - min_c_exp[k]) + min_c_exp[k]
+    print(corrected, "corrected points")
     return corrected
 
 
 def F(u, n):
-    F_ijk = np.zeros(len(u[0]), (n + 1) ** 3)
+    F_ijk = np.zeros(shape=(len(u[0]), (n + 1) ** 3))
     for h in range(len(u[0])):
         counter = 0
         for i in range(n + 1):
             for j in range(n + 1):
                 for k in range(n + 1):
-                    F_ijk[h][counter] = bernstein_poly(n, i, u[0]) * bernstein_poly(n, j, u[1]) * \
-                                        bernstein_poly(n, k, u[2])
+                    F_ijk[h][counter] = bernstein_poly(n, i, u[h][0]) * bernstein_poly(n, j, u[h][1]) * \
+                                        bernstein_poly(n, k, u[h][2])
                     counter += 1
     return F_ijk
 

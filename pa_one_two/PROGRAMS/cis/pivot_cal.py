@@ -34,4 +34,4 @@ def pivot(ps_data):
         lstsq_r[ti + 1][4] = -1
         lstsq_r[ti + 2][5] = -1
 
-    return np.linalg.lstsq(lstsq_r, lstsq_p, rcond=None)
+    return np.linalg.lstsq(lstsq_r, lstsq_p, rcond=None)[0][0:3].reshape(3, )
