@@ -1,6 +1,6 @@
 from scipy.stats import special_ortho_group as so
 import numpy as np
-import pa_one.PROGRAMS.cis.frame as fr
+import pa_one_two.PROGRAMS.cis.frame as fr
 
 
 def random_r_w_t(n):

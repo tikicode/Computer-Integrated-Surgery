@@ -1,7 +1,7 @@
 from .test_generator import random_r_w_t as f
 import numpy as np
 import pytest
-import pa_one.PROGRAMS.cis.point_set as ps
+import pa_one_two.PROGRAMS.cis.point_set as ps
 
 
 def test_reg_no_noise():
