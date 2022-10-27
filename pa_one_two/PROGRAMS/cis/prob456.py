@@ -1,4 +1,4 @@
-from .point_set import PointSet
+from .point_set import PointCloud
 from .point_set import registration
 from .pivot_cal import pivot
 from .file_rw import getDataOptPivot
@@ -29,12 +29,11 @@ def prob_four(cal_body, cal_reading):
     
     #iterate through each of the frames and compute Ci to append to C_exp
     for frame in range(len(D_points)):
-        FD = registration(d_points, D_points[frame])
-        FA = registration(a_points, A_points[frame])
+        FD = registration(d_points.points, D_points[frame].points)
+        FA = registration(a_points.points, A_points[frame].points)
         NF = FD.invert().compose_frame(FA)
-        Ci = PointSet(NF.compose_transform(c_points.points))
+        Ci = PointCloud(NF.compose_transform(c_points.points))
         c_exp.append(Ci)
-
     return c_exp
 
 
@@ -73,7 +72,7 @@ def prob_six(opt_pivot, cal_body):
     """
     opt_D, opt_H = getDataOptPivot(opt_pivot)
     d_points, a_points, c_points = getDataCalBody(cal_body)
-    FD = registration(opt_D[0], d_points)
+    FD = registration(opt_D[0].points, d_points.points)
     for i in range(len(opt_H)):
-        opt_H[i] = PointSet(FD.compose_transform(opt_H[i].points))
+        opt_H[i] = PointCloud(FD.compose_transform(opt_H[i].points))
     return pivot(opt_H)

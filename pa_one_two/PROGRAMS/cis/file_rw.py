@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from .point_set import PointSet
+from .point_set import PointCloud
 
 
 def getDataCalBody(fName):
@@ -23,9 +23,9 @@ def getDataCalBody(fName):
     NA = int(headers["Na"][0])
     NC = int(headers["Nc"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
-    return (PointSet(np.array(text[["xi", "yi", "zi"]][0:0 + ND]).T),
-            PointSet(np.array(text[["xi", "yi", "zi"]][ND: ND + NA]).T),
-            PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA:]).T))
+    return (PointCloud(np.array(text[["xi", "yi", "zi"]][0:0 + ND])),
+            PointCloud(np.array(text[["xi", "yi", "zi"]][ND: ND + NA])),
+            PointCloud(np.array(text[["xi", "yi", "zi"]][ND + NA:])))
 
 
 def getDataCalReading(fName):
@@ -53,9 +53,9 @@ def getDataCalReading(fName):
 
     for frame in range(NFrame):
         ind = frame * (ND + NA + NC)
-        D.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind: ND + ind]).T))
-        A.append(PointSet(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind]).T))
-        C.append(PointSet(np.array(text[["xi", "yi", "zi"]][ND + NA + ind: NC + ND + NA + ind]).T))
+        D.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ind: ND + ind])))
+        A.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ND + ind: ND + NA + ind])))
+        C.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ND + NA + ind: NC + ND + NA + ind])))
     return D, A, C
 
 
@@ -82,7 +82,7 @@ def getDataEMPivot(fName):
 
     for frame in range(NFrame):
         ind = frame * NG
-        G.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind]).T))
+        G.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind])))
     return G
 
 
@@ -110,8 +110,8 @@ def getDataOptPivot(fName):
 
     for frame in range(NFrame):
         ind = frame * (ND + NH)
-        D.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + ND + ind]).T))
-        H.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind + ND:0 + ND + NH + ind]).T))
+        D.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ind:0 + ND + ind])))
+        H.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ind + ND:0 + ND + NH + ind])))
     return D, H
 
 
@@ -133,7 +133,7 @@ def getDataCTFids(fName):
     NB = int(headers["Nb"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
 
-    Bi = [PointSet(np.array(text[["xi", "yi", "zi"]][:]).T)]
+    Bi = [PointCloud(np.array(text[["xi", "yi", "zi"]][:]))]
     return Bi
 
 
@@ -160,7 +160,7 @@ def getDataEMFids(fName):
 
     for frame in range(NB):
         ind = frame * NG
-        G.append(PointSet(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind]).T))
+        G.append(PointCloud(np.array(text[["xi", "yi", "zi"]][ind:0 + NG + ind])))
     return G
 
 

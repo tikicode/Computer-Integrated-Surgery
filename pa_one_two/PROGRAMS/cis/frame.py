@@ -67,7 +67,10 @@ class Frame:
             The transformed points
         """
         #compute and return the resulting vector of the frame transform
-        t_points = np.dot(self.R, points) + self.p
+        frame_size = len(points)
+        t_points = np.zeros(shape=(frame_size, 3))
+        for i in range(frame_size):
+            t_points[i] = np.dot(self.R, points[i]) + self.p
         return t_points
 
     def invert(self):

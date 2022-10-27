@@ -13,6 +13,6 @@ def test_reg_no_noise():
         xp[i], yp[i], zp[i] = 10 * i, 10 * i, 10 * i
     A = np.vstack(np.meshgrid(xp, yp, zp)).reshape(3, -1)
     B = frame.compose_transform(A)
-    calc_frame = ps.registration(ps.PointSet(A), ps.PointSet(B))
+    calc_frame = ps.registration(ps.PointCloud(A), ps.PointCloud(B))
     assert np.allclose(calc_frame.R, frame.R, atol=1e-3)
     assert np.allclose(calc_frame.p, frame.p, atol=1e-3)
