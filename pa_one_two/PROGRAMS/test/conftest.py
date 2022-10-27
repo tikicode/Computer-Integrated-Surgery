@@ -2,7 +2,7 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption("--name", action="store", default="pa2-debug-a")
+    parser.addoption("--name", action="store", default="pa2-debug-f")
 
 
 @pytest.fixture(scope='session')

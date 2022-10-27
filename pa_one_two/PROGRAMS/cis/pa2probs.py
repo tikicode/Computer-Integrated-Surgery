@@ -14,7 +14,6 @@ from .frame import Frame
 def prob_three(cal_reading, em_pivot, c_exp):
     D, A, C = getDataCalReading(cal_reading)
     em_pivot = getDataEMPivot(em_pivot)
-    len_em = len(em_pivot)
     pts_em = em_pivot[0].points.shape[0]
     c = np.zeros(shape=(len(C) * C[0].points.shape[0], 3))
     for i in range(len(C)):
@@ -43,8 +42,8 @@ def prob_four(em_fids, q_min, q_max, q_exp_min, q_exp_max, coefficients, p_tip_e
     for i in range(em_fids_undistorted.shape[0]):
         F_G = registration(g_j, em_fids_undistorted[i])
         b_j.append(F_G.compose_transform(np.array([p_tip_em])))
-    b_j = np.array(b_j).reshape(6, 3)
-    return b_j, em_fids_undistorted
+    b_j = np.array(b_j).reshape(len(em_fids), 3)
+    return b_j
 
 
 def prob_five(ct_fids, b_j):
@@ -53,15 +52,15 @@ def prob_five(ct_fids, b_j):
     return F_reg
 
 
-def prob_six(em_nav, em_fids_undistorted, p_tip_em, F_reg, coefficients, q_min, q_max, q_exp_min, q_exp_max):
+def prob_six(em_nav, em_pivot_undistorted, p_tip_em, F_reg, coefficients, q_min, q_max, q_exp_min, q_exp_max):
     em_nav = getDataEMPivot(em_nav)
-    em_nav_undistorted_reg = remove_distortion(em_nav, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)
-    em_nav_undistorted = em_nav_undistorted_reg.reshape((len(em_nav), len(em_nav[0].points), 3))
-    g0 = np.mean(em_nav_undistorted, axis=1)[0]
-    g_j = em_nav_undistorted[0] - g0
+    em_nav_undistorted = remove_distortion(em_nav, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)\
+        .reshape((len(em_nav), len(em_nav[0].points), 3))
+    g0 = np.mean(em_pivot_undistorted, axis=1)[0]
+    g_j = em_pivot_undistorted[0] - g0
     b_nav = []
     for i in range(em_nav_undistorted.shape[0]):
-        F_G = registration(g_j, em_fids_undistorted[i])
+        F_G = registration(g_j, em_nav_undistorted[i])
         b_nav.append(F_reg.compose_transform(F_G.compose_transform(np.array([p_tip_em]))))
     b_nav = np.array(b_nav)
     return b_nav.reshape(len(em_nav), 3)

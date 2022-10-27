@@ -10,7 +10,7 @@ import numpy as np
 @click.option("--output_dir", "output_dir", "-o",
               default="../OUTPUT/PA2",
               help="Output directory")
-@click.option("--name", "name", "-n", default="pa2-debug-a", help="Name of file")
+@click.option("--name", "name", "-n", default="pa2-unknown-j", help="Name of file")
 def main(data_dir, output_dir, name):
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
@@ -34,10 +34,10 @@ def main(data_dir, output_dir, name):
     beacon = pa1.prob_six(opt_pivot, cal_body)
     coefficients, p_tip_em, base_em, em_pivot_undistorted, q_min, q_max, q_exp_min, q_exp_max = \
         pa2.prob_three(cal_reading, em_pivot, c_exp_pts)
-    b_j, em_fids_undistorted = pa2.prob_four(em_fids, q_min, q_max, q_exp_min, q_exp_max, coefficients,
-                                             p_tip_em, em_pivot_undistorted)
+    b_j = pa2.prob_four(em_fids, q_min, q_max, q_exp_min, q_exp_max, coefficients,
+                        p_tip_em, em_pivot_undistorted)
     F_reg = pa2.prob_five(ct_fids, b_j)
-    b_nav = pa2.prob_six(em_nav, em_fids_undistorted, p_tip_em, F_reg, coefficients, q_min, q_max,
+    b_nav = pa2.prob_six(em_nav, em_pivot_undistorted, p_tip_em, F_reg, coefficients, q_min, q_max,
                          q_exp_min, q_exp_max)
 
     write_output_one(c_exp, probe, beacon, output_dir, name)

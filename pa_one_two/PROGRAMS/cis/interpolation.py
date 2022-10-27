@@ -12,8 +12,8 @@ def remove_distortion(point_set, coefficient, deg, q_min, q_max, q_exp_min, q_ex
         for j in range(deg + 1):
             for k in range(deg + 1):
                 for l in range(deg + 1):
-                    corrected[i] += coefficient[j * (deg + 1) ** 2 + k * (deg + 1) + l] * \
-                                    bernstein(deg, j, u[i][0]) * bernstein(deg, k, u[i][1]) * bernstein(deg, l, u[i][2])
+                    corrected[i] += np.dot(coefficient[j * (deg + 1) ** 2 + k * (deg + 1) + l],
+                                           bernstein(deg, j, u[i][0]) * bernstein(deg, k, u[i][1]) * bernstein(deg, l, u[i][2]))
     corrected = unscale(corrected, q_exp_min, q_exp_max)
     return corrected
 
