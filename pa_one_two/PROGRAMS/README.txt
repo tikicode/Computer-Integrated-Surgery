@@ -4,7 +4,11 @@ cis.file_rw : This file contains the methods for reading data in from the data f
 cis.frame : Contains a Frame class and methods for frame transformations
 cis.pivot_cal : This file contains the method for pivot calibration
 cis.point_set : Contains a class for point clouds and a point cloud registration method
-cis.prob456 : Contains the solutions for problems 4,5, and 6
+cis.interpolation: Contains the methods for distortion correction
+cis.prob456 : Contains the solutions for problems 4, 5, and 6 for PA1
+cis.pa2probs: Contains the solutions for problems 1, 3, 4, 5, and 6 for PA2
+
+
 pa_one.py : The executable program for this project
 
 Setup
@@ -28,3 +32,10 @@ Options:
 
 Example: python pa_one.py -n pa1-unknown-k -o /Users/avnukala/Desktop
 
+Instructions for testing
+_________________________
+
+cd PROGRAMS
+Usage: python -m pytest FILENAME
+
+Example: python -m pytest pa2-debug-a 
