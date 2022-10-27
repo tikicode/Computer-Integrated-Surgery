@@ -1,7 +1,8 @@
 import click
 from pathlib import Path
-
-from cis.pa2probs import prob_one, prob_four, prob_five, prob_six
+import cis.pa2probs as pa2
+import cis.prob456 as pa1
+import numpy as np
 
 
 @click.command()
@@ -24,11 +25,23 @@ def main(data_dir, output_dir, name):
     em_pivot = data_dir / f"{name}-empivot.txt"
     opt_pivot = data_dir / f"{name}-optpivot.txt"
 
-    B_j = prob_four(cal_body, cal_reading, em_pivot, em_fids)
-    F_reg = prob_five(ct_fids, B_j)
-    tip = prob_six(cal_body, cal_reading, em_pivot, ct_fids)
+    c_exp = pa1.prob_four(cal_body, cal_reading)
+    c_exp_pts = np.zeros(shape=(len(c_exp) * c_exp[0].points.shape[0], 3))
+    for i in range(len(c_exp)):
+        index = c_exp[0].points.shape[0] * i
+        c_exp_pts[index:index + c_exp[0].points.shape[0]] = c_exp[i].points
+    probe = pa1.prob_five(em_pivot)
+    beacon = pa1.prob_six(opt_pivot, cal_body)
+    coefficients, p_tip_em, base_em, em_pivot_undistorted, q_min, q_max, q_exp_min, q_exp_max = \
+        pa2.prob_three(cal_reading, em_pivot, c_exp_pts)
+    b_j, em_fids_undistorted = pa2.prob_four(em_fids, q_min, q_max, q_exp_min, q_exp_max, coefficients,
+                                             p_tip_em, em_pivot_undistorted)
+    F_reg = pa2.prob_five(ct_fids, b_j)
+    b_nav = pa2.prob_six(em_nav, em_fids_undistorted, p_tip_em, F_reg, coefficients, q_min, q_max,
+                         q_exp_min, q_exp_max)
 
-    write_output_two(tip, output_dir, name)
+    write_output_one(c_exp, probe, beacon, output_dir, name)
+    write_output_two(b_nav, output_dir, name)
 
 
 def write_output_one(c_exp, probe, beacon, output_dir, name):
@@ -45,18 +58,18 @@ def write_output_one(c_exp, probe, beacon, output_dir, name):
         observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-1.txt", 'w')
-    f.write('{0}, {1}, {2}\n'.format(len(c_exp[0].points[0]), len(c_exp), name))
+    f.write('{0}, {1}, {2}\n'.format(c_exp[0].points.shape[0], len(c_exp), f"{name}-output-1.txt"))
     f.write('{0},   {1},   {2}\n'.format(format(probe[0], '.2f'), format(probe[1], '.2f'), format(probe[2], '.2f')))
     f.write('{0},   {1},   {2}\n'.format(format(beacon[0], '.2f'), format(beacon[1], '.2f'), format(beacon[2], '.2f')))
     for r in range(len(c_exp)):
-        for c in range(len(c_exp[0].points[1])):
-            f.write('{0},   {1},   {2}\n'.format(format(c_exp[r].points[0][c], '.2f'),
-                                                 format(c_exp[r].points[1][c], '.2f'),
-                                                 format(c_exp[r].points[2][c], '.2f')))
+        for c in range(c_exp[0].points.shape[0]):
+            f.write('{0},   {1},   {2}\n'.format(format(c_exp[r].points[c][0], '.2f'),
+                                                 format(c_exp[r].points[c][1], '.2f'),
+                                                 format(c_exp[r].points[c][2], '.2f')))
     f.close()
 
 
-def write_output_two(tip, output_dir, name):
+def write_output_two(b_nav, output_dir, name):
     """Method for writing file outputs
 
     Parameters
@@ -70,11 +83,11 @@ def write_output_two(tip, output_dir, name):
         observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-2.txt", 'w')
-    f.write('{0}, {1}\n'.format(len(tip[0].points[0]), name))
-    for i in range(len(tip.points[0])):
-        f.write('{0}, {1}, {2}\n'.format(format(tip.points[0][i], '.2f'),
-                                         format(tip.points[1][i], '.2f'),
-                                         format(tip.points[2][i], '.2f')))
+    f.write('{0}, {1}\n'.format(len(b_nav), f"{name}-output-2.txt"))
+    for i in range(len(b_nav)):
+        f.write('{0},    {1},    {2}\n'.format(format(b_nav[i][0], '.2f'),
+                                               format(b_nav.points[i][1], '.2f'),
+                                               format(b_nav.points[i][2], '.2f')))
     f.close()
 
 

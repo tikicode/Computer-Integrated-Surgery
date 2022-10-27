@@ -43,7 +43,7 @@ def write_output(c_exp, probe, beacon, output_dir, name):
         observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-1.txt", 'w')
-    f.write('{0}, {1}, {2}\n'.format(c_exp[0].points.shape[0], len(c_exp), name))
+    f.write('{0}, {1}, {2}\n'.format(c_exp[0].points.shape[0], len(c_exp), f"{name}-output-1.txt"))
     f.write('{0},   {1},   {2}\n'.format(format(probe[0], '.2f'), format(probe[1], '.2f'), format(probe[2], '.2f')))
     f.write('{0},   {1},   {2}\n'.format(format(beacon[0], '.2f'), format(beacon[1], '.2f'), format(beacon[2], '.2f')))
     for r in range(len(c_exp)):
