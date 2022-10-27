@@ -35,7 +35,7 @@ def pivot(ps_data):
         lstsq_r[ti + 2][5] = -1
 
     pivot_cal = np.linalg.lstsq(lstsq_r, lstsq_p, rcond=None)[0][0:6]
-    tip_in_tool = pivot_cal[0:3].T
-    tool_in_base = pivot_cal[3:6].T
+    tip_in_tool = np.squeeze(pivot_cal[0:3])
+    tool_in_base = np.squeeze(pivot_cal[3:6])
 
     return tip_in_tool, tool_in_base

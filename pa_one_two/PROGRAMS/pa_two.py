@@ -8,7 +8,7 @@ import numpy as np
 @click.command()
 @click.option("--data_dir", "data_dir", "-d", default="DATA/PA2", help="Input DATA directory")
 @click.option("--output_dir", "output_dir", "-o",
-              default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one_two/OUTPUT/PA2",
+              default="../OUTPUT/PA2",
               help="Output directory")
 @click.option("--name", "name", "-n", default="pa2-debug-a", help="Name of file")
 def main(data_dir, output_dir, name):
@@ -58,7 +58,7 @@ def write_output_one(c_exp, probe, beacon, output_dir, name):
         observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-1.txt", 'w')
-    f.write('{0}, {1}, {2}\n'.format(c_exp[0].points.shape[0], len(c_exp), f"{name}-output-1.txt"))
+    f.write('{0}, {1}, {2}\n'.format(c_exp[0].points.shape[0], len(c_exp), name + "-output-1.txt"))
     f.write('{0},   {1},   {2}\n'.format(format(probe[0], '.2f'), format(probe[1], '.2f'), format(probe[2], '.2f')))
     f.write('{0},   {1},   {2}\n'.format(format(beacon[0], '.2f'), format(beacon[1], '.2f'), format(beacon[2], '.2f')))
     for r in range(len(c_exp)):
@@ -83,11 +83,11 @@ def write_output_two(b_nav, output_dir, name):
         observation frame of optical tracker DATA
     """
     f = open(f"{output_dir}/{name}-output-2.txt", 'w')
-    f.write('{0}, {1}\n'.format(len(b_nav), f"{name}-output-2.txt"))
+    f.write('{0}, {1}\n'.format(len(b_nav), name + "-output-2.txt"))
     for i in range(len(b_nav)):
         f.write('{0},    {1},    {2}\n'.format(format(b_nav[i][0], '.2f'),
-                                               format(b_nav.points[i][1], '.2f'),
-                                               format(b_nav.points[i][2], '.2f')))
+                                               format(b_nav[i][1], '.2f'),
+                                               format(b_nav[i][2], '.2f')))
     f.close()
 
 

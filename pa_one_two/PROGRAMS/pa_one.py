@@ -12,7 +12,6 @@ import cis.prob456 as prob
               help="Output directory")
 @click.option("--name", "name", "-n", default="pa1-debug-g", help="Name of file")
 def main(data_dir, output_dir, name):
-    print(pathlib.Path.cwd())
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
     if not output_dir.exists():
@@ -26,6 +25,7 @@ def main(data_dir, output_dir, name):
     c_exp = prob.prob_four(cal_body, cal_reading)
     probe = prob.prob_five(em_pivot)
     beacon = prob.prob_six(opt_pivot, cal_body)
+
     write_output(c_exp, probe, beacon, output_dir, name)
 
 

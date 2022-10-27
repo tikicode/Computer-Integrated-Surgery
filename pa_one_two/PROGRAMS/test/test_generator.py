@@ -7,7 +7,7 @@ def random_r_w_t(n):
     rng = np.random.RandomState(n)
     rot = so.rvs(3)
     rot = np.dot(rot, rot.T)
-    trans = rng.rand(3, 1)
+    trans = rng.rand(1, 3)
     frame = fr.Frame(rot, trans)
     return frame
 

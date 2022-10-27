@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='Computer-Integrated-Surgery',
     version='',
-    packages=['cis'],
+    packages=['Computer-Integrated-Surgery'],
     url='',
     license='',
     author='anukala, ichalom',

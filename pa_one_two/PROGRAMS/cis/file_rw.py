@@ -178,3 +178,8 @@ def getDataEMNav(fName):
         Point cloud describing test points of the probe that need to be translated to CT coordinates
     """
     return getDataEMFids(fName)
+
+
+def getOutput(fName):
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+    return np.array(text[["xi", "yi", "zi"]])

@@ -1,7 +1,7 @@
 from .test_generator import random_r_w_t as f
 import numpy as np
+from pa_one_two.PROGRAMS.cis import point_set as ps
 import pytest
-import pa_one_two.PROGRAMS.cis.point_set as ps
 
 
 def test_reg_no_noise():
@@ -11,8 +11,13 @@ def test_reg_no_noise():
     zp = np.zeros((10, 1))
     for i in range(10):
         xp[i], yp[i], zp[i] = 10 * i, 10 * i, 10 * i
-    A = np.vstack(np.meshgrid(xp, yp, zp)).reshape(3, -1)
+    A = np.zeros((1000, 3))
+    for i in range(10):
+        for j in range(10):
+            for k in range(10):
+                A[i * 100 + j * 10 + k] = np.array([i, j, k])
+    print(A.shape)
     B = frame.compose_transform(A)
-    calc_frame = ps.registration(ps.PointCloud(A), ps.PointCloud(B))
+    calc_frame = ps.registration(A, B)
     assert np.allclose(calc_frame.R, frame.R, atol=1e-3)
     assert np.allclose(calc_frame.p, frame.p, atol=1e-3)
