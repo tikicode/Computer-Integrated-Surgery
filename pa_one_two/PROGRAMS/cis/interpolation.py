@@ -49,9 +49,8 @@ def scale_to_box(q, q_min, q_max):
 
 
 def unscale(q, q_min, q_max):
-    q_min = np.amax(q, axis=0)
-    q_min = np.amin(q, axis=0)
-    return q * (q_max - q_min) + q_min
+    unscale = q * (q_max - q_min) + q_min
+    return unscale
 
 
 def bernstein(N, k, u):
