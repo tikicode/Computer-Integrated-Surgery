@@ -51,7 +51,8 @@ def prob_five(em_pivot):
         The position of the EM probe relative to the EM tracker base
     """
     em_data = getDataEMPivot(em_pivot)
-    return pivot(em_data)
+    tip_in_tool, _ = pivot(em_data)
+    return tip_in_tool
 
 
 def prob_six(opt_pivot, cal_body):
@@ -75,4 +76,5 @@ def prob_six(opt_pivot, cal_body):
     FD = registration(opt_D[0].points, d_points.points)
     for i in range(len(opt_H)):
         opt_H[i] = PointCloud(FD.compose_transform(opt_H[i].points))
-    return pivot(opt_H)
+    tip_in_tool, _ = pivot(opt_H)
+    return tip_in_tool

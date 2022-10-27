@@ -10,7 +10,7 @@ import cis.prob456 as prob
 @click.option("--output_dir", "output_dir", "-o",
               default="/Users/avnukala/Desktop/CIS I /Computer-Integrated-Surgery/pa_one_two/OUTPUT/PA1",
               help="Output directory")
-@click.option("--name", "name", "-n", default="pa1-debug-a", help="Name of file")
+@click.option("--name", "name", "-n", default="pa1-debug-g", help="Name of file")
 def main(data_dir, output_dir, name):
     print(pathlib.Path.cwd())
     data_dir = Path(data_dir)

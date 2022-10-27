@@ -17,7 +17,7 @@ def pivot(ps_data):
         The least squares solution to the calibration problem
     """
     local_probe = ps_data[0].points
-    g_j = local_probe - np.mean(local_probe, axis=1, keepdims=True)
+    g_j = local_probe - np.mean(local_probe, axis=1)[0]
 
     num_frames = len(ps_data)
 
@@ -34,4 +34,8 @@ def pivot(ps_data):
         lstsq_r[ti + 1][4] = -1
         lstsq_r[ti + 2][5] = -1
 
-    return np.linalg.lstsq(lstsq_r, lstsq_p, rcond=None)[0][0:3].reshape(3, )
+    pivot_cal = np.linalg.lstsq(lstsq_r, lstsq_p, rcond=None)[0][0:6]
+    tip_in_tool = pivot_cal[0:3].reshape(3,)
+    tool_in_base = pivot_cal[3:6].reshape(3,)
+
+    return tip_in_tool, tool_in_base
