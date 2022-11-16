@@ -1,6 +1,5 @@
 import numpy as np
 from .frame import Frame
-import numpy as np
 
 
 def registration(A: np.ndarray, B: np.ndarray):
