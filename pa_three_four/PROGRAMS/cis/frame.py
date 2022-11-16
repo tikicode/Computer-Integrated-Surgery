@@ -15,7 +15,7 @@ class Frame:
         A representation of the translation vector, 3x1
     """
 
-    def __init__(self, R, p):
+    def __init__(self, R: np.ndarray, p: np.ndarray):
         """
         Parameters
         _________
@@ -29,7 +29,7 @@ class Frame:
         self.R = R
         self.p = p
 
-    def compose_frame(self, other_frame):
+    def compose_frame(self: np.ndarray, other_frame: np.ndarray):
         """Method for computing a frame composition
 
         Parameters
@@ -44,14 +44,14 @@ class Frame:
         Frame
             The composed frame
         """
-        #find the rotation matrix and translation vector of the new frame 
+        # find the rotation matrix and translation vector of the new frame
         mat = np.dot(self.R, other_frame.R)
         vec = np.dot(self.R, other_frame.p) + self.p
 
-        #return the resulting frame of the composition
+        # return the resulting frame of the composition
         return Frame(mat, vec)
 
-    def compose_transform(self, points):
+    def compose_transform(self: np.ndarray, points: np.ndarray):
         """Method for computing a frame transform
 
         Parameters
@@ -66,7 +66,7 @@ class Frame:
         t_points : np.ndarray
             The transformed points
         """
-        #compute and return the resulting vector of the frame transform
+        # compute and return the resulting vector of the frame transform
         frame_size = len(points)
         t_points = np.zeros(shape=(frame_size, 3))
         for i in range(frame_size):
@@ -86,11 +86,11 @@ class Frame:
         Frame
             The inverse of the Frame
         """
-        #compute the new rotation matrix by inverting the current one
+        # compute the new rotation matrix by inverting the current one
         new_r = np.linalg.inv(self.R)
 
-        #compute the new translation vector
+        # compute the new translation vector
         new_p = np.dot(-1 * new_r, self.p)
 
-        #return the Frame resulting from the new inverted R and p
+        # return the Frame resulting from the new inverted R and p
         return Frame(new_r, new_p)
