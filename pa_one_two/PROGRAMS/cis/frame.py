@@ -44,11 +44,11 @@ class Frame:
         Frame
             The composed frame
         """
-        #find the rotation matrix and translation vector of the new frame 
+        # find the rotation matrix and translation vector of the new frame
         mat = np.dot(self.R, other_frame.R)
         vec = np.dot(self.R, other_frame.p) + self.p
 
-        #return the resulting frame of the composition
+        # return the resulting frame of the composition
         return Frame(mat, vec)
 
     def compose_transform(self, points):
@@ -66,11 +66,8 @@ class Frame:
         t_points : np.ndarray
             The transformed points
         """
-        #compute and return the resulting vector of the frame transform
-        frame_size = len(points)
-        t_points = np.zeros(shape=(frame_size, 3))
-        for i in range(frame_size):
-            t_points[i] = np.dot(self.R, points[i]) + self.p
+        # compute and return the resulting vector of the frame transform
+        t_points = np.dot(self.R, points) + self.p
         return t_points
 
     def invert(self):
@@ -86,11 +83,11 @@ class Frame:
         Frame
             The inverse of the Frame
         """
-        #compute the new rotation matrix by inverting the current one
+        # compute the new rotation matrix by inverting the current one
         new_r = np.linalg.inv(self.R)
 
-        #compute the new translation vector
+        # compute the new translation vector
         new_p = np.dot(-1 * new_r, self.p)
 
-        #return the Frame resulting from the new inverted R and p
+        # return the Frame resulting from the new inverted R and p
         return Frame(new_r, new_p)

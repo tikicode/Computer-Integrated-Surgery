@@ -29,7 +29,7 @@ class Frame:
         self.R = R
         self.p = p
 
-    def compose_frame(self: np.ndarray, other_frame: np.ndarray):
+    def compose_frame(self, other_frame):
         """Method for computing a frame composition
 
         Parameters
@@ -51,7 +51,7 @@ class Frame:
         # return the resulting frame of the composition
         return Frame(mat, vec)
 
-    def compose_transform(self: np.ndarray, points: np.ndarray):
+    def compose_transform(self, points: np.ndarray):
         """Method for computing a frame transform
 
         Parameters

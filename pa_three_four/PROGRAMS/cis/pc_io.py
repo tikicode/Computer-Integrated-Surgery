@@ -13,13 +13,13 @@ def import_rigid_body(fName):
     Returns
     _________
     np.ndarray
-         Point clouds representing the xyz coordinates of the marker LEDs in body coordinates and the xyz coordinates
+         Point clouds representing the xyz coordinates of the marker LEDs in body coordinates and the xyz coordinate
          of the tip in body coordinates
     """
-    headers = pd.read_csv(fName, header=None, names=["Nm", np.nan], nrows=1)
+    headers = pd.read_csv(fName, header=None, names=["Nm", np.nan], nrows=1, delim_whitespace=True)
     # number of headers
     Nm = int(headers["Nm"][0])
-    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1, delim_whitespace=True)
     marker_leds = np.array(text[["xi", "yi", "zi"]][:Nm])
     tip_in_body = np.array(text[["xi", "yi", "zi"]][Nm:])
     return marker_leds, tip_in_body
@@ -36,19 +36,21 @@ def import_surface_mesh(fName):
     Returns
     _________
     np.ndarray
-         Point clouds representing the xyz coordinates of vertices in CT coordinates and the xyz coordinates of the
+         Point clouds representing the xyz coordinates of vertices in CT coordinates and the xyz coordinates= of the
 
     """
-    headers = pd.read_csv(fName, header=None, names=["Nv", np.nan], nrows=1)
+    headers = pd.read_csv(fName, header=None, names=["Nv"], nrows=1, delim_whitespace=True)
     # number of vertices
     Nv = int(headers["Nv"][0])
-    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1, nrows=Nv)
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1, nrows=Nv, delim_whitespace=True)
     ct_vertices = np.array(text[["xi", "yi", "zi"]][:])
-    headers = pd.read_csv(fName, header=None, names=["Nt", np.nan], skiprows=Nv + 1, nrows=1)
+    headers = pd.read_csv(fName, header=None, names=["Nt"], skiprows=Nv + 1, nrows=1, delim_whitespace=True)
     Nt = int(headers["Nt"][0])
-    text = pd.read_csv(fName, header=None, names=["i1", "i2", "i3", "n1", "n2", "n3"], skiprows=Nv + 2, nrows=Nt)
-    triangles = np.array(text[["i1", "i2", "i3", "n1", "n2", "n3"]][:])
-    return ct_vertices, triangles, Nv
+    text = pd.read_csv(fName, header=None, names=["i1", "i2", "i3", "n1", "n2", "n3"], skiprows=Nv + 2, nrows=Nt,
+                       delim_whitespace=True)
+    indices = np.array(text[["i1", "i2", "i3"]][:])
+    triangles = np.array(text[["n1", "n2", "n3"]][:])
+    return ct_vertices, indices, triangles
 
 
 def import_sample_readings(fName, Na, Nb):
@@ -98,11 +100,11 @@ def output_pa34(output_dir, name, cs, ds, mag_dif, samples):
     f = open(f"{output_dir}/{name}-output.txt", 'w')
     f.write('{0} {1}\n'.format(samples, name + "-output-1.txt"))
     for n in range(samples):
-        f.write('  {0}   {1}   {2}        {3}   {4}   {5}     {6}\n'.format(format(ds[n][0], '.2f'),
-                                                                            format(ds[n][1], '.2f'),
-                                                                            format(ds[n][2], '.2f'),
-                                                                            format(cs[n][0], '.2f'),
-                                                                            format(cs[n][1], '.2f'),
-                                                                            format(cs[n][2], '.2f'),
-                                                                            format(mag_dif[n], '.2f')))
+        f.write('  {0:>8}{1:>9}{2:>9}{3:>13}{4:>9}{5:>9}{6:>10}\n'.format(format(ds[n][0], '.2f'),
+                                                                          format(ds[n][1], '.2f'),
+                                                                          format(ds[n][2], '.2f'),
+                                                                          format(cs[n][0], '.2f'),
+                                                                          format(cs[n][1], '.2f'),
+                                                                          format(cs[n][2], '.2f'),
+                                                                          format(mag_dif[n], '.3f')))
     f.close()
