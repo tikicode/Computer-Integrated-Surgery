@@ -173,3 +173,41 @@ def find_euclidian_distance(c_k, d_k):
     mag_dif = np.linalg.norm(c_k - d_k, axis=1)
 
     return mag_dif
+
+
+def ICP_linear(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):
+    """
+    Method for finding the rigid body pose using ICP
+
+    Parameters
+    _________
+    mesh_vertices : np.ndarray
+        The xyz coordinates of the vertices of the surface mesh
+    indices : np.ndarray
+        The indices of the vertices of the surface mesh
+    a_frames : np.ndarray
+        The xyz coordinates of A body LED markers in tracker coordinates
+    b_frames : np.ndarray
+        The xyz coordinates of B body LED markers in tracker coordinates
+    a_tip : np.ndarray
+        The xyz coordinates of the tip in tracker coordinates
+    a_leds : np.ndarray
+        The xyz coordinates of A body LED markers in body coordinates
+    b_leds : np.ndarray
+        The xyz coordinates of B body LED markers in body coordinates
+
+    Returns
+    _________
+    np.ndarray
+        The xyz coordinates of the pointer tip with respect to rigid body B
+    """
+
+    d_ks = find_rigid_body_pose(a_read, b_read, a_tip, a_leds, b_leds)
+    c_ks = np.zeros(shape=(len(d_ks), 3))
+    # find the closest point for each frame
+    for i in range(len(a_read)):
+        F_reg = Frame(np.identity(3), np.zeros(3))
+        s_k = find_sample_points(F_reg, d_ks[i])
+        c_ks[i] = (find_closest_point(vertices, indices, s_k).reshape(1, 3))
+    mag_dif = find_euclidian_distance(d_ks, c_ks)
+    return d_ks, c_ks, mag_dif

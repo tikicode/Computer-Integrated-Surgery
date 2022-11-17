@@ -80,7 +80,7 @@ def import_sample_readings(fName, Na, Nb):
     return A_readings, B_readings, D_readings
 
 
-def output_pa34(output_dir, name, cs, ds, mag_dif, samples):
+def output_pa34(output_dir, name, ds, cs, mag_dif, samples):
     """Method for outputting PA34 data
 
     Parameters
