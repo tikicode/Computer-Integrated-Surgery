@@ -2,8 +2,7 @@ import numpy as np
 
 
 class Frame:
-    """
-    Class used to represent Frames
+    """Class used to represent Frames
 
     ...
 

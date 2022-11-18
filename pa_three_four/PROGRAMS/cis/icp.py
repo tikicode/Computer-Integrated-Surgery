@@ -4,14 +4,15 @@ from .registration import registration
 from .frame import Frame
 
 
-def find_rigid_body_pose(a_frames, b_frames, a_tip, a_leds, b_leds):
+def find_rigid_body_pose(a_frames: np.ndarray, b_frames: np.ndarray, a_tip: np.ndarray, a_leds: np.ndarray,
+                         b_leds: np.ndarray):
     """
     Method for finding the rigid body pose
 
     Parameters
     _________
     a_frames : np.ndarray
-        The xyz coordinates of A body LED markers in tracker coordinates
+        The xyz coordinates of A,,m,,,, body LED markers in tracker coordinates
     b_frames : np.ndarray
         The xyz coordinates of B body LED markers in tracker coordinates
     a_tip : np.ndarray
@@ -23,7 +24,7 @@ def find_rigid_body_pose(a_frames, b_frames, a_tip, a_leds, b_leds):
 
     Returns
     _________
-    np.ndarray
+    d_k_cloud : np.ndarray
         The xyz coordinates of the pointer tip with respect to rigid body B
     """
 
@@ -44,7 +45,7 @@ def find_rigid_body_pose(a_frames, b_frames, a_tip, a_leds, b_leds):
     return d_k_cloud
 
 
-def find_sample_points(F_reg, d_k):
+def find_sample_points(F_reg: Frame, d_k: np.ndarray):
     """
     Method for finding sample points to match to the surface mesh
 
@@ -57,7 +58,7 @@ def find_sample_points(F_reg, d_k):
 
     Returns
     _________
-    np.ndarray
+    sample_points : np.ndarray
         The xyz coordinates of sample points estimated to be on the surface mesh
     """
     d_k = d_k.reshape(1, 3)
@@ -66,7 +67,7 @@ def find_sample_points(F_reg, d_k):
     return sample_points
 
 
-def find_closest_point(mesh_vertices, indices, s_k):
+def find_closest_point(mesh_vertices: np.ndarray, indices: np.ndarray, s_k: np.ndarray):
     """
     Method for finding the closest point on the surface mesh
 
@@ -81,7 +82,7 @@ def find_closest_point(mesh_vertices, indices, s_k):
 
     Returns
     _________
-    np.ndarray
+    c_min : np.ndarray
         The xyz coordinates of the closest point on the surface mesh
     """
     d_min = np.inf
@@ -95,7 +96,7 @@ def find_closest_point(mesh_vertices, indices, s_k):
     return c_min
 
 
-def find_closest_point_triangle(vertices, s_k):
+def find_closest_point_triangle(vertices: np.ndarray, s_k: np.ndarray):
     """
     Method for finding the closest point on a triangle
 
@@ -108,10 +109,10 @@ def find_closest_point_triangle(vertices, s_k):
 
     Returns
     _________
-    np.ndarray
+    c : np.ndarray
         The xyz coordinates of the closest point on the triangle
     """
-    p, q, r, = vertices
+    p, q, r = vertices
     A_minus_p = s_k - vertices[0]
     B = np.vstack(((q - p), (r - p))).T
     lam, mu = np.linalg.lstsq(B, A_minus_p.T, rcond=None)[0]
@@ -126,7 +127,7 @@ def find_closest_point_triangle(vertices, s_k):
     return c
 
 
-def project_on_segment(c, p, q):
+def project_on_segment(c: np.ndarray, p: np.ndarray, q: np.ndarray):
     """
     Method for projecting a point on a segment
 
@@ -153,7 +154,7 @@ def project_on_segment(c, p, q):
     return p + t * (q - p)
 
 
-def find_euclidian_distance(c_k, d_k):
+def find_euclidian_distance(c_k: np.ndarray, d_k: np.ndarray):
     """
     Method for finding the euclidian distance between the sample points and the surface mesh
 
@@ -166,7 +167,7 @@ def find_euclidian_distance(c_k, d_k):
 
     Returns
     _________
-    np.ndarray
+    mag_dif : np.ndarray
         The euclidian distance between the sample points and the surface mesh
     """
 
@@ -175,7 +176,8 @@ def find_euclidian_distance(c_k, d_k):
     return mag_dif
 
 
-def ICP_linear(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):
+def ICP_linear(a_read: np.ndarray, b_read: np.ndarray, a_tip: np.ndarray, a_leds: np.ndarray, b_leds: np.ndarray,
+               vertices: np.ndarray, indices: np.ndarray):
     """
     Method for finding the rigid body pose using ICP
 
