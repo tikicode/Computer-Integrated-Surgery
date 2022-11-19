@@ -40,7 +40,7 @@ class CovTreeNode:
         self.n_things = n_t
         self.F = self.compute_cov_frame(ts)
         self.UB, self.LB = self.compute_cov_bounds(ts, n_t)
-        self.left, self.right, self.have_subtrees = self.construct_subtrees(n_t, 50, 1000)
+        self.left, self.right, self.have_subtrees = self.construct_subtrees(n_t, 25, 1)
 
     def compute_cov_bounds(self, ts, n_t):
         """Method for computing the covariance bounds of a node
@@ -61,6 +61,7 @@ class CovTreeNode:
         LB : np.ndarray
             The lower bound of the covariance tree node
         """
+        print(ts[0].corners)
         UB = self.F.invert().compose_transform(ts[0].sort_point().reshape(1, 3))
         LB = self.F.invert().compose_transform(ts[0].sort_point().reshape(1, 3))
         # compute the minimum and maximum bounds of the triangle points
@@ -87,6 +88,7 @@ class CovTreeNode:
         n_p = len(points)
         centroid = np.mean(points, axis=0)
         A = np.zeros((3, 3))
+        # compute the covariance matrix
         for i in range(n_p):
             A += np.outer(points[i] - centroid, points[i] - centroid)
         u, s, vt = np.linalg.svd(A)
@@ -100,7 +102,7 @@ class CovTreeNode:
         reflection_comp = np.eye(comp_size)
         reflection_comp[comp_size - 1][comp_size - 1] = np.linalg.det(np.dot(vt, u))
         # find the transformation matrix R and the corresponding translation vector
-        R = np.dot(vt, np.dot(reflection_comp, u))
+        R = np.dot(vt, np.dot(reflection_comp, vt))
         p = centroid
         # return the frame for the point cloud transformation
         return Frame(R, p)
@@ -158,16 +160,10 @@ class CovTreeNode:
         ts = self.things
         for i in range(n_t):
             # transform triangle corners into the frame of the node
-            p, q, r = self.F.invert().compose_transform(ts[i].corners)
-            if p[0] <= 0 and q[0] <= 0 and r[0] <= 0:
+            if self.F.invert().compose_transform(ts[i].sort_point().reshape(1, 3))[0][0] < 0:
                 left_tree.append(ts[i])
-            elif p[0] >= 0 and q[0] >= 0 and r[0] >= 0:
-                right_tree.append(ts[i])
-            # if the point is on the boundary, add it to both subtrees
             else:
-                left_tree.append(ts[i])
                 right_tree.append(ts[i])
-        print(len(left_tree), len(right_tree))
         return np.array(left_tree), np.array(right_tree)
 
     def find_closest_point(self, v, bound, closest):
@@ -198,20 +194,23 @@ class CovTreeNode:
             if v_local[0, i] > self.UB[0, i] + bound or v_local[0, i] < self.LB[0, i] - bound:
                 return
         if self.have_subtrees:
-            # if the x value is less than zero, search the left subtree
-            if v_local[0, 0] < 0:
-                left = self.left.find_closest_point(v, bound, closest)
-                if left is not None:
-                    return left
-                else:
-                    return closest
-            # if the x value is greater than zero, search the right subtree
+            # if the x value is less than -bound, search the left subtree
+            if v_local[0, 0] < -bound:
+                return self.left.find_closest_point(v, bound, closest)
+            elif v_local[0, 0] > bound:
+                return self.right.find_closest_point(v, bound, closest)
+            # if the x value is greater than bound, search the right subtree
             else:
+                left = self.left.find_closest_point(v, bound, closest)
                 right = self.right.find_closest_point(v, bound, closest)
-                if right is not None:
+                if left is not None and right is None:
+                    return left
+                elif left is None and right is not None:
                     return right
-                else:
+                elif left is None and right is None:
                     return closest
+                else:
+                    return min(left, right, key=lambda x: np.linalg.norm(x - v))
         # if the node has no subtrees, search the triangles for the closest point
         else:
             for i in range(self.n_things):

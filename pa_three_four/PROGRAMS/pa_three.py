@@ -15,6 +15,17 @@ import numpy as np
               help="Output directory")
 @click.option("--name", "name", "-n", default="PA3-Debug-A", help="Name of file")
 def main(data_dir, output_dir, name):
+    """Main method for PA3
+
+    Parameters
+    ----------
+    data_dir : str
+        The directory of the DATA files
+    output_dir : str
+        The directory to output the data
+    name : str
+        The name of the data output file
+    """
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
     if not output_dir.exists():
@@ -35,25 +46,80 @@ def main(data_dir, output_dir, name):
 
 
 def simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):
+    """Simple ICP method for PA3
+
+    Parameters
+    ----------
+    a_read : np.ndarray
+        The readings from the first rigid body
+    b_read : np.ndarray
+        The readings from the second rigid body
+    a_tip : np.ndarray
+        The tip of the first rigid body
+    a_leds : np.ndarray
+        The LEDs of the first rigid body
+    b_leds : np.ndarray
+        The LEDs of the second rigid body
+    vertices : np.ndarray
+        The vertices of the surface mesh
+    indices : np.ndarray
+        The indices of the surface mesh
+
+    Returns
+    -------
+    d_ks : np.ndarray
+        The points on the surface mesh
+    c_ks : np.ndarray
+        The points on the rigid body
+    mag_dif : np.ndarray
+        The magnitude of the difference between the points
+    """
     return icp.ICP_linear(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
 
 
 def efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):
-    triangles = np.array([vertices[indices[i]] for i in range(len(indices))])
+    """Efficient ICP method for PA3
+
+    Parameters
+    ----------
+    a_read : np.ndarray
+        The readings from the first rigid body
+    b_read : np.ndarray
+        The readings from the second rigid body
+    a_tip : np.ndarray
+        The tip of the first rigid body
+    a_leds : np.ndarray
+        The LEDs of the first rigid body
+    b_leds : np.ndarray
+        The LEDs of the second rigid body
+    vertices : np.ndarray
+        The vertices of the surface mesh
+    indices : np.ndarray
+        The indices of the surface mesh
+
+    Returns
+    -------
+    d_ks : np.ndarray
+        The points on the surface mesh
+    c_ks : np.ndarray
+        The points on the rigid body
+    mag_dif : np.ndarray
+        The magnitude of the difference between the points
+    """
     d_ks = icp.find_rigid_body_pose(a_read, b_read, a_tip, a_leds, b_leds)
-    s_ks = np.zeros(shape=(len(d_ks), 3))
-    for i in range(len(a_read)):
-        F_reg = frame.Frame(np.identity(3), np.zeros(3))
-        s_ks[i] = icp.find_sample_points(F_reg, d_ks[i])
     closest = []
-    ts = np.array([thang.Thang(triangles[i]) for i in range(len(triangles))])
-    root = ct.CovTreeNode(ts, len(vertices))
+    # Create an array of Thing objects representing the triangles of the mesh
+    ts = np.array([thang.Thang(vertices[indices[i]]) for i in range(len(indices))])
+    # Create a CovTree object from the array of Thing objects
+    root = ct.CovTreeNode(ts, len(ts))
     previous_closest = ts[0].corners[0]
-    for _, s in enumerate(s_ks):
+    # Find bounds and compute the closest point to the rigid body for each point on the surface mesh
+    for _, s in enumerate(d_ks):
         bound = np.linalg.norm(s - previous_closest)
         closest.append(root.find_closest_point(s, bound, previous_closest))
         previous_closest = closest[-1]
     c_ks = np.array(closest)
+    # Compute the magnitude of the difference between the points
     mag_dif = icp.find_euclidian_distance(c_ks, d_ks)
     return d_ks, c_ks, mag_dif
 
