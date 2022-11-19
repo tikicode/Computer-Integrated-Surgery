@@ -1,13 +1,14 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 
-def import_rigid_body(fName):
+def import_rigid_body(fName: Path):
     """Method for importing rigid body design data
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -25,12 +26,12 @@ def import_rigid_body(fName):
     return marker_leds, tip_in_body
 
 
-def import_surface_mesh(fName):
+def import_surface_mesh(fName: Path):
     """Method for importing body surface definition data
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -53,13 +54,18 @@ def import_surface_mesh(fName):
     return ct_vertices, indices, triangles
 
 
-def import_sample_readings(fName, Na, Nb):
+def import_sample_readings(fName: Path, Na: int, Nb: int):
     """Method for importing sample readings
 
     Parameters
     _________
-    fName : str
-        The name of the DATA file
+    fName : Path
+        The path of the DATA file
+    Na : int
+        The number of A body marker LED coordinates per frame
+    Nb : int
+        The number of B body marker LED coordinates per frame
+
 
     Returns
     _________
@@ -67,27 +73,27 @@ def import_sample_readings(fName, Na, Nb):
          Point clouds representing frames of xyz coordinates of A body LED markers, B body LED markers, and D
          (unneeded) body LED markers
     """
-    headers = pd.read_csv(fName, header=None, names=["Ns", "Nsamps", np.nan], nrows=1)
+    headers = pd.read_csv(fName, header=None, names=["Ns", "n_s", np.nan], nrows=1)
     # number of leds and samples
     Ns = int(headers["Ns"][0])
-    Nsamps = int(headers["Nsamps"][0])
+    n_s = int(headers["n_s"][0])
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
     A_readings, B_readings, D_readings = [], [], []
-    for i in range(Nsamps):
+    for i in range(n_s):
         A_readings.append(np.array(text[["xi", "yi", "zi"]][i * Ns: Na + i * Ns]))
         B_readings.append(np.array(text[["xi", "yi", "zi"]][Na + i * Ns: Na + Nb + i * Ns]))
         D_readings.append(np.array(text[["xi", "yi", "zi"]][Na + Nb + i * Ns: Na + Nb + Ns + i * Ns]))
     return A_readings, B_readings, D_readings
 
 
-def output_pa34(output_dir, name, ds, cs, mag_dif, samples):
+def output_pa34(output_dir: Path, name: Path, ds: np.ndarray, cs: np.ndarray, mag_dif: np.ndarray, samples: int):
     """Method for outputting PA34 data
 
     Parameters
     _________
-    output_dir : str
+    output_dir : Path
         The directory to output the data
-    name : str
+    name : Path
         The name of the data output file
     cs : np.ndarray
         The xyz coordinates on the surface mesh found from F_reg * d_k
@@ -95,6 +101,8 @@ def output_pa34(output_dir, name, ds, cs, mag_dif, samples):
         The xyz coordinates of the tip with respect to rigid body B
     mag_dif : np.ndarray
         The magnitude of the difference between the tip in CT coordinates and the tip in DCS coordinates
+    samples : int
+        The number of samples in the output
     """
 
     f = open(f"{output_dir}/{name}-output.txt", 'w')

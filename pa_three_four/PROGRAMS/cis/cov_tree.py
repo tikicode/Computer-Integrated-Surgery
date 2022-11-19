@@ -1,5 +1,6 @@
 import numpy as np
 from .frame import Frame
+from .thang import Thang
 
 
 class CovTreeNode:
@@ -10,16 +11,16 @@ class CovTreeNode:
     Attributes
     ________
     things : np.ndarray
-        A representation of the rotation matrix, 3x3
-    n_things : np.ndarray
-        A representation of the translation vector, 3x1
+        A representation of a subtree of the surface mesh of an object
+    n_things : int
+        Number of things in the subtree
     F : Frame
         The frame of the covariance tree node
     UB : np.ndarray
         The upper bound of the covariance tree node
     LB : np.ndarray
         The lower bound of the covariance tree node
-    subtrees : np.ndarray
+    subtrees : CovTreeNode
         The subtrees of the covariance tree node
     have_subtrees : bool
         Whether the covariance tree node has subtrees
@@ -30,7 +31,7 @@ class CovTreeNode:
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         ts : np.ndarray
             The triangles of the covariance tree node
         n_t : int
@@ -42,13 +43,13 @@ class CovTreeNode:
         self.UB, self.LB = self.compute_cov_bounds(ts, n_t)
         self.left, self.right, self.have_subtrees = self.construct_subtrees(n_t, 25, 1)
 
-    def compute_cov_bounds(self, ts, n_t):
+    def compute_cov_bounds(self, ts: np.ndarray, n_t: int):
         """Method for computing the covariance bounds of a node
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         ts : np.ndarray
             The triangles of the covariance tree node
         n_t : int
@@ -68,13 +69,13 @@ class CovTreeNode:
             LB, UB = ts[i].enlarge_bounds(self.F, LB, UB)
         return UB, LB
 
-    def compute_cov_frame(self, ts):
-        """Method for computing the covariance frame of a node
+    def compute_cov_frame(self, ts: np.ndarray):
+        """Method for computing the frame transform to the local frame of the node
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         ts : np.ndarray
             The triangles of the covariance tree node
 
@@ -106,13 +107,13 @@ class CovTreeNode:
         # return the frame for the point cloud transformation
         return Frame(R, p)
 
-    def construct_subtrees(self, n_t, min_count, min_diag):
+    def construct_subtrees(self, n_t: int, min_count: int, min_diag: int):
         """Method for constructing the subtrees of a node
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         n_t : int
             The number of triangles in the covariance tree node
         min_count : int
@@ -138,13 +139,13 @@ class CovTreeNode:
         left, right = CovTreeNode(left_tree, len(left_tree)), CovTreeNode(right_tree, len(right_tree))
         return left, right, True
 
-    def split_sort(self, n_t):
+    def split_sort(self, n_t: int):
         """Method for dividing the triangles of a node into two subtrees
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         n_t : int
             The number of triangles in the covariance tree node
 
@@ -165,13 +166,13 @@ class CovTreeNode:
                 right_tree.append(ts[i])
         return np.array(left_tree), np.array(right_tree)
 
-    def find_closest_point(self, v, bound, closest):
+    def find_closest_point(self, v: np.ndarray, bound: float, closest: np.ndarray):
         """Method for finding the closest point to a given point
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
+            A node in the covariance tree
         v : np.ndarray
             The point to find the closest point to
         bound : float
@@ -216,14 +217,14 @@ class CovTreeNode:
                 bound, closest = self.update_closest(self.things[i], v, bound, closest)
             return closest
 
-    def update_closest(self, t, v, bound, closest):
+    def update_closest(self, t: Thang, v: np.ndarray, bound: float, closest: np.ndarray):
         """Method for updating the closest point to a given point
 
         Parameters
         _________
         self : CovTreeNode
-            CovTreeNode object
-        t : Triangle
+            A node in the covariance tree
+        t : Thang
             The triangle to check for the closest point
         v : np.ndarray
             The point to find the closest point to
@@ -241,6 +242,7 @@ class CovTreeNode:
         """
         cp = t.closest_point_to(v)
         dist = np.linalg.norm(cp - v)
+        # If this distance is below the bound, set cp as the new closest
         if dist < bound:
             return dist, cp
         return bound, closest

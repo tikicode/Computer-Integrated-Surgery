@@ -16,7 +16,7 @@ import time
 @click.option("--output_dir", "output_dir", "-o",
               default="../OUTPUT/PA3",
               help="Output directory")
-@click.option("--name", "name", "-n", default="PA3-Debug-A", help="Name of file")
+@click.option("--name", "name", "-n", default="PA3-A-Debug", help="Name of file")
 def main(data_dir, sample_readings_type, output_dir, name):
     """Main method for PA3
 

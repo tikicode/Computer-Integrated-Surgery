@@ -78,6 +78,7 @@ class Thang:
         UB : np.ndarray
             The upper bound of the bounding box
         """
+        # Convert corners to frame of the covariance tree node
         fic = frame.invert().compose_transform(self.corners)
         for i in range(3):
             for j in range(3):
@@ -112,7 +113,7 @@ class Thang:
         self : Thang
             Thang object
         frame : Frame
-            The frame to be composed with
+            The frame transform to convert
         LB : np.ndarray
             The lower bound of the bounding box
         UB : np.ndarray
@@ -123,6 +124,7 @@ class Thang:
         bool
             True if the triangle is in the bounding box, False otherwise
         """
+        # Convert corners to frame of the covariance tree node
         fic = frame.invert().compose_transform(self.corners)
         for i in range(3):
             for j in range(3):

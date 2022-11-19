@@ -1,14 +1,15 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from .point_set import PointCloud
 
 
-def getDataCalBody(fName):
+def getDataCalBody(fName: Path):
     """Method for collecting calibration object DATA
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -28,12 +29,12 @@ def getDataCalBody(fName):
             PointCloud(np.array(text[["xi", "yi", "zi"]][ND + NA:])))
 
 
-def getDataCalReading(fName):
+def getDataCalReading(fName: Path):
     """Method for collecting sensor values
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -59,12 +60,12 @@ def getDataCalReading(fName):
     return D, A, C
 
 
-def getDataEMPivot(fName):
+def getDataEMPivot(fName: Path):
     """Method for collecting EM sensor values
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -86,12 +87,12 @@ def getDataEMPivot(fName):
     return G
 
 
-def getDataOptPivot(fName):
+def getDataOptPivot(fName: Path):
     """Method for collecting optical sensor DATA
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -115,12 +116,12 @@ def getDataOptPivot(fName):
     return D, H
 
 
-def getDataCTFids(fName):
+def getDataCTFids(fName: Path):
     """Method for collecting CT fiducial coordinates
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -137,12 +138,12 @@ def getDataCTFids(fName):
     return Bi
 
 
-def getDataEMFids(fName):
+def getDataEMFids(fName: Path):
     """Method for collecting DATA in which the probe is in contact with corresponding CT fiducials
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -164,12 +165,12 @@ def getDataEMFids(fName):
     return G
 
 
-def getDataEMNav(fName):
+def getDataEMNav(fName: Path):
     """Method for collecting DATA defining test points of the probe tip
 
     Parameters
     _________
-    fName : str
+    fName : Path
         The name of the DATA file
 
     Returns
@@ -180,6 +181,6 @@ def getDataEMNav(fName):
     return getDataEMFids(fName)
 
 
-def getOutput(fName):
+def getOutput(fName: Path):
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
     return np.array(text[["xi", "yi", "zi"]])
