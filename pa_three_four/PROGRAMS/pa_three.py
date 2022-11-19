@@ -6,21 +6,26 @@ import cis.frame as frame
 import cis.thang as thang
 import cis.cov_tree as ct
 import numpy as np
+import time
 
 
 @click.command()
 @click.option("--data_dir", "data_dir", "-d", default="DATA/", help="Input DATA directory")
+@click.option("--sample_readings_type", "sample_readings_type", "-t", default="Debug",
+              help="Debug or Unknown")
 @click.option("--output_dir", "output_dir", "-o",
               default="../OUTPUT/PA3",
               help="Output directory")
 @click.option("--name", "name", "-n", default="PA3-Debug-A", help="Name of file")
-def main(data_dir, output_dir, name):
+def main(data_dir, sample_readings_type, output_dir, name):
     """Main method for PA3
 
     Parameters
     ----------
     data_dir : str
         The directory of the DATA files
+    sample_readings_type : str
+        The name of the sample readings file
     output_dir : str
         The directory to output the data
     name : str
@@ -34,15 +39,23 @@ def main(data_dir, output_dir, name):
     body_a = data_dir / f"Problem3-BodyA.txt"
     body_b = data_dir / f"Problem3-BodyB.txt"
     mesh = data_dir / f"Problem3Mesh.sur"
-    sample_readings = data_dir / f"{name}-Debug-SampleReadingsTest.txt"
+    sample_readings = data_dir / f"{name}-{sample_readings_type}-SampleReadingsTest.txt"
 
+    # Read in the data
+    print(name)
     a_leds, a_tip = io.import_rigid_body(body_a)
     b_leds, b_tip = io.import_rigid_body(body_b)
     vertices, indices, triangles = io.import_surface_mesh(mesh)
     a_read, b_read, d_read = io.import_sample_readings(sample_readings, len(a_leds), len(b_leds))
-    # d_ks, c_ks, mag_dif = simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
-    d_ks, c_ks, mag_dif = efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
-    io.output_pa34(output_dir, name, d_ks, c_ks, mag_dif, len(a_read))
+    st_s = time.time()
+    d_ks_s, c_ks_s, mag_dif_s = simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
+    et_s = time.time()
+    print(f"Simple ICP took {et_s - st_s} seconds")
+    st_e = time.time()
+    d_ks_e, c_ks_e, mag_dif_e = efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
+    et_e = time.time()
+    print(f"Efficient ICP took {et_e - st_e} seconds")
+    io.output_pa34(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
 
 
 def simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):

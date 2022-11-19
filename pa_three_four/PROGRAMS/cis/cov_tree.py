@@ -61,7 +61,6 @@ class CovTreeNode:
         LB : np.ndarray
             The lower bound of the covariance tree node
         """
-        print(ts[0].corners)
         UB = self.F.invert().compose_transform(ts[0].sort_point().reshape(1, 3))
         LB = self.F.invert().compose_transform(ts[0].sort_point().reshape(1, 3))
         # compute the minimum and maximum bounds of the triangle points

@@ -1,5 +1,4 @@
 import numpy as np
-
 from .registration import registration
 from .frame import Frame
 
