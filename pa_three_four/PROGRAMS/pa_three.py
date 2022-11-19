@@ -56,6 +56,7 @@ def main(data_dir, sample_readings_type, output_dir, name):
     et_e = time.time()
     print(f"Efficient ICP took {et_e - st_e} seconds")
     io.output_pa34(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
+    print(f"MSE between simple and efficient ICP output c_k coordinates: {np.mean((c_ks_e - c_ks_s)**2)}")
 
 
 def simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):

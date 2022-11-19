@@ -98,7 +98,7 @@ def output_pa34(output_dir, name, ds, cs, mag_dif, samples):
     """
 
     f = open(f"{output_dir}/{name}-output.txt", 'w')
-    f.write('{0} {1}\n'.format(samples, name + "-output-1.txt"))
+    f.write('{0} {1}\n'.format(samples, name + "-output.txt"))
     for n in range(samples):
         f.write('  {0:>8}{1:>9}{2:>9}{3:>13}{4:>9}{5:>9}{6:>10}\n'.format(format(ds[n][0], '.2f'),
                                                                           format(ds[n][1], '.2f'),
