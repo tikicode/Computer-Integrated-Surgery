@@ -172,7 +172,7 @@ class CovTreeNode:
         Parameters
         _________
         self : CovTreeNode
-            A node in the covariance tree
+            A node in the covariathnce tree
         v : np.ndarray
             The point to find the closest point to
         bound : float
