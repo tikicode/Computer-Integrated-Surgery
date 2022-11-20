@@ -86,14 +86,14 @@ def import_sample_readings(fName: Path, Na: int, Nb: int):
     return A_readings, B_readings, D_readings
 
 
-def output_pa34(output_dir: Path, name: Path, ds: np.ndarray, cs: np.ndarray, mag_dif: np.ndarray, samples: int):
+def output_pa3(output_dir: Path, name: str, ds: np.ndarray, cs: np.ndarray, mag_dif: np.ndarray, samples: int):
     """Method for outputting PA34 data
 
     Parameters
     _________
     output_dir : Path
         The directory to output the data
-    name : Path
+    name : str
         The name of the data output file
     cs : np.ndarray
         The xyz coordinates on the surface mesh found from F_reg * d_k
@@ -116,3 +116,24 @@ def output_pa34(output_dir: Path, name: Path, ds: np.ndarray, cs: np.ndarray, ma
                                                                           format(cs[n][2], '.2f'),
                                                                           format(mag_dif[n], '.3f')))
     f.close()
+
+
+def read_answer_pa3(fName: Path):
+    """Method for reading the answer file for PA3
+
+    Parameters
+    _________
+    fName : Path
+        The path of the answer file
+
+    Returns
+    _________
+    np.ndarray
+         Point clouds representing the xyz coordinates of the tip in CT coordinates
+    """
+    text = pd.read_csv(fName, header=None, names=["d_xi", "d_yi", "d_zi", "c_xi", "c_yi", "c_zi", "mag_dif"], skiprows=1,
+                       delim_whitespace=True)
+    ds = np.array(text[["d_xi", "d_yi", "d_zi"]][:])
+    cs = np.array(text[["c_xi", "c_yi", "c_zi"]][:])
+    mags = np.array(text["mag_dif"][:])
+    return ds, cs, mags

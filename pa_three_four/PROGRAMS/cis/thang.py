@@ -103,7 +103,7 @@ class Thang:
         UB : np.ndarray
             The upper bound of the bounding box
         """
-        return self.enlarge_bounds(frame, np.array([-np.inf, -np.inf, -np.inf]), np.array([np.inf, np.inf, np.inf]))
+        return self.enlarge_bounds(frame, np.array([[np.inf, np.inf, np.inf]]), np.array([[-np.inf, -np.inf, -np.inf]]))
 
     def may_be_in_bounds(self, frame: Frame, LB: np.ndarray, UB: np.ndarray):
         """Method for checking if the triangle is in the bounding box
@@ -128,6 +128,6 @@ class Thang:
         fic = frame.invert().compose_transform(self.corners)
         for i in range(3):
             for j in range(3):
-                if LB[j] < fic[i][j] < UB[j]:
-                    return False
-        return True
+                if LB[0][j] < fic[i][j] < UB[0][j]:
+                    return True
+        return False

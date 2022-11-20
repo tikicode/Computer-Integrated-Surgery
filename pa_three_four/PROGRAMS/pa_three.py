@@ -50,13 +50,13 @@ def main(data_dir, sample_readings_type, output_dir, name):
     st_s = time.time()
     d_ks_s, c_ks_s, mag_dif_s = simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
     et_s = time.time()
-    print(f"Simple ICP took {et_s - st_s} seconds")
+    print(f"Simple ICP took {et_s - st_s:.2f} seconds")
     st_e = time.time()
     d_ks_e, c_ks_e, mag_dif_e = efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
     et_e = time.time()
-    print(f"Efficient ICP took {et_e - st_e} seconds")
-    io.output_pa34(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
-    print(f"MSE between simple and efficient ICP output c_k coordinates: {np.mean((c_ks_e - c_ks_s)**2)}")
+    print(f"Efficient ICP took {et_e - st_e:.2f} seconds")
+    io.output_pa3(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
+    print(f"MSE between simple and efficient ICP output c_k coordinates: {np.mean((c_ks_e - c_ks_s)**2):.2f}")
 
 
 def simple_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):

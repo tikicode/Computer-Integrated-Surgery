@@ -6,8 +6,13 @@ cis.frame : Contains a Frame class and methods for frame transformations
 cis.icp : Contains methods for computing linear ICP
 cis.pc_io : This file contains the methods for file reading and writing
 cis.registration : This file contains a method for point cloud registration
-cis.thang.py : This file contains the class and methods for a Thang (Thing) object to store triangles
+cis.thang : This file contains the class and methods for a Thang (Thing) object to store triangles
                from the surface mesh given
+test.test_cov_tree : This file contains the test cases for the CovTreeNode class
+test.test_generator : This file contains a random frame generator for testing registration
+test.test_icp : This file contains the test cases for the ICP method
+test.test_registration : This file contains the test cases for the registration method
+test.test_thang : This file contains the test cases for the Thang(Thing) class
 
 pa3_run_all.sh : Shell script to run find the output for all datasets once
 pa_three.py : The executable Program for this project
@@ -41,4 +46,6 @@ Usage: /bin/bash pa3_run_all.sh
 
 Instructions for Testing
 ________________________
+The unit test cases are located directly under the TEST folder
 cd PROGRAMS
+Usage: python -m pytest
