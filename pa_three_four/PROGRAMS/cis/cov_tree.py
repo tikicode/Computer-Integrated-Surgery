@@ -1,6 +1,7 @@
 import numpy as np
 from .frame import Frame
 from .thang import Thang
+import time
 
 
 class CovTreeNode:
@@ -39,9 +40,9 @@ class CovTreeNode:
         """
         self.things = ts
         self.n_things = n_t
-        self.F = self.compute_cov_frame(ts)
+        self.F = self.compute_cov_frame()
         self.UB, self.LB = self.compute_cov_bounds(ts, n_t)
-        self.left, self.right, self.have_subtrees = self.construct_subtrees(n_t, 25, 1)
+        self.left, self.right, self.have_subtrees = self.construct_subtrees(n_t, 10, 1)
 
     def compute_cov_bounds(self, ts: np.ndarray, n_t: int):
         """Method for computing the covariance bounds of a node
@@ -69,7 +70,7 @@ class CovTreeNode:
             LB, UB = ts[i].enlarge_bounds(self.F, LB, UB)
         return UB, LB
 
-    def compute_cov_frame(self, ts: np.ndarray):
+    def compute_cov_frame(self):
         """Method for computing the frame transform to the local frame of the node
 
         Parameters
@@ -84,7 +85,7 @@ class CovTreeNode:
         Frame
             The covariance frame of the node
         """
-        points = np.array([ts[i].sort_point() for i in range(len(ts))])
+        points = np.array([self.things[i].sort_point() for i in range(self.n_things)])
         n_p = len(points)
         centroid = np.mean(points, axis=0)
         A = np.zeros((3, 3))
@@ -134,7 +135,7 @@ class CovTreeNode:
             return None, None, False
         left_tree, right_tree = self.split_sort(n_t)
         # check end condition to stop splits if all points are added to one side or the other
-        if len(left_tree) == n_t or len(right_tree) == n_t:
+        if len(left_tree) == n_t or len(right_tree) == n_t or len(left_tree) == 0 or len(right_tree) == 0:
             return None, None, False
         left, right = CovTreeNode(left_tree, len(left_tree)), CovTreeNode(right_tree, len(right_tree))
         return left, right, True
@@ -172,7 +173,7 @@ class CovTreeNode:
         Parameters
         _________
         self : CovTreeNode
-            A node in the covariathnce tree
+            A node in the covariance tree
         v : np.ndarray
             The point to find the closest point to
         bound : float
@@ -197,20 +198,22 @@ class CovTreeNode:
             # if the x value is less than -bound, search the left subtree
             if v_local[0, 0] < -bound:
                 return self.left.find_closest_point(v, bound, closest)
+            # if the x value is greater than bound, search the right subtree
             elif v_local[0, 0] > bound:
                 return self.right.find_closest_point(v, bound, closest)
-            # if the x value is greater than bound, search the right subtree
+            # if the x value is in the bound, search both subtrees
             else:
                 left = self.left.find_closest_point(v, bound, closest)
                 right = self.right.find_closest_point(v, bound, closest)
+                if left is not None and right is not None:
+                    return min(left, right, key=lambda x: np.linalg.norm(x - v))
                 if left is not None and right is None:
                     return left
                 elif left is None and right is not None:
                     return right
-                elif left is None and right is None:
-                    return closest
                 else:
-                    return min(left, right, key=lambda x: np.linalg.norm(x - v))
+                    return closest
+
         # if the node has no subtrees, search the triangles for the closest point
         else:
             for i in range(self.n_things):

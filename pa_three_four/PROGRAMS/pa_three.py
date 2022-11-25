@@ -2,7 +2,6 @@ import click
 from pathlib import Path
 import cis.pc_io as io
 import cis.icp as icp
-import cis.frame as frame
 import cis.thang as thang
 import cis.cov_tree as ct
 import numpy as np
@@ -55,7 +54,7 @@ def main(data_dir, sample_readings_type, output_dir, name):
     d_ks_e, c_ks_e, mag_dif_e = efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices)
     et_e = time.time()
     print(f"Efficient ICP took {et_e - st_e:.2f} seconds")
-    io.output_pa3(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
+    io.output_pa34(output_dir, name, d_ks_e, c_ks_e, mag_dif_e, len(a_read))
     print(f"MSE between simple and efficient ICP output c_k coordinates: {np.mean((c_ks_e - c_ks_s)**2):.2f}")
 
 

@@ -86,7 +86,7 @@ def import_sample_readings(fName: Path, Na: int, Nb: int):
     return A_readings, B_readings, D_readings
 
 
-def output_pa3(output_dir: Path, name: str, ds: np.ndarray, cs: np.ndarray, mag_dif: np.ndarray, samples: int):
+def output_pa34(output_dir: Path, name: str, ds: np.ndarray, cs: np.ndarray, mag_dif: np.ndarray, samples: int):
     """Method for outputting PA34 data
 
     Parameters

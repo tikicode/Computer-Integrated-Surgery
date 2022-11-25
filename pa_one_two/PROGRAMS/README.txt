@@ -32,7 +32,7 @@ Options:
 
 Example: python pa_one.py -n pa1-unknown-k -o /Users/avnukala/Desktop
 
-Instructions for testing
+Instructions for Testing
 _________________________
 
 cd PROGRAMS
