@@ -1,11 +1,7 @@
 import click
 from pathlib import Path
-import cis.frame as frame
 import cis.pc_io as io
 import cis.icp as icp
-import cis.thang as thang
-import cis.cov_tree as ct
-import numpy as np
 import cis.icp_reg as ir
 import time
 
