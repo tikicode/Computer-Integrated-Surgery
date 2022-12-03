@@ -4,6 +4,37 @@ from .thang import Thang
 import time
 
 
+def update_closest(t: Thang, v: np.ndarray, bound: float, closest: np.ndarray):
+    """Method for updating the closest point to a given point
+
+    Parameters
+    _________
+    self : CovTreeNode
+        A node in the covariance tree
+    t : Thang
+        The triangle to check for the closest point
+    v : np.ndarray
+        The point to find the closest point to
+    bound : float
+        The current closest distance
+    closest : np.ndarray
+        The current closest point
+
+    Returns
+    _________
+    bound : float
+        The distance to the closest point
+    closest : np.ndarray
+        The closest point
+    """
+    cp = t.closest_point_to(v)
+    dist = np.linalg.norm(cp - v)
+    # If this distance is below the bound, set cp as the new closest
+    if dist < bound:
+        return dist, cp
+    return bound, closest
+
+
 class CovTreeNode:
     """Class used to represent Covariance Tree Functions
 
@@ -134,9 +165,9 @@ class CovTreeNode:
         if n_t <= min_count or np.linalg.norm(self.UB - self.LB) <= min_diag:
             return None, None, False
         left_tree, right_tree = self.split_sort(n_t)
-        # check end condition to stop splits if all points are added to one side or the other
-        if len(left_tree) == n_t or len(right_tree) == n_t or len(left_tree) == 0 or len(right_tree) == 0:
-            return None, None, False
+        # # check end condition to stop splits if all points are added to one side or the other
+        # if len(left_tree) == n_t or len(right_tree) == n_t or len(left_tree) == 0 or len(right_tree) == 0:
+        #     return None, None, False
         left, right = CovTreeNode(left_tree, len(left_tree)), CovTreeNode(right_tree, len(right_tree))
         return left, right, True
 
@@ -195,58 +226,26 @@ class CovTreeNode:
             if v_local[0, i] > self.UB[0, i] + bound or v_local[0, i] < self.LB[0, i] - bound:
                 return
         if self.have_subtrees:
-            # if the x value is less than -bound, search the left subtree
-            if v_local[0, 0] < -bound:
-                return self.left.find_closest_point(v, bound, closest)
-            # if the x value is greater than bound, search the right subtree
-            elif v_local[0, 0] > bound:
-                return self.right.find_closest_point(v, bound, closest)
-            # if the x value is in the bound, search both subtrees
-            else:
-                left = self.left.find_closest_point(v, bound, closest)
-                right = self.right.find_closest_point(v, bound, closest)
-                if left is not None and right is not None:
-                    return min(left, right, key=lambda x: np.linalg.norm(x - v))
-                if left is not None and right is None:
+            left = self.left.find_closest_point(v, bound, closest)
+            right = self.right.find_closest_point(v, bound, closest)
+            if left is not None and right is not None:
+                # if both subtrees have a closest point, find the closest of the two
+                if np.linalg.norm(left[0] - v) < np.linalg.norm(right[0] - v):
                     return left
-                elif left is None and right is not None:
-                    return right
                 else:
-                    return closest
+                    return right
+            # if only one subtree has a closest point, return that point
+            if left is not None and right is None:
+                return left
+            elif left is None and right is not None:
+                return right
+            # if neither subtree has a closest point, return the current closest point
+            else:
+                return closest, bound
 
         # if the node has no subtrees, search the triangles for the closest point
         else:
             for i in range(self.n_things):
-                bound, closest = self.update_closest(self.things[i], v, bound, closest)
-            return closest
-
-    def update_closest(self, t: Thang, v: np.ndarray, bound: float, closest: np.ndarray):
-        """Method for updating the closest point to a given point
-
-        Parameters
-        _________
-        self : CovTreeNode
-            A node in the covariance tree
-        t : Thang
-            The triangle to check for the closest point
-        v : np.ndarray
-            The point to find the closest point to
-        bound : float
-            The current closest distance
-        closest : np.ndarray
-            The current closest point
-
-        Returns
-        _________
-        bound : float
-            The distance to the closest point
-        closest : np.ndarray
-            The closest point
-        """
-        cp = t.closest_point_to(v)
-        dist = np.linalg.norm(cp - v)
-        # If this distance is below the bound, set cp as the new closest
-        if dist < bound:
-            return dist, cp
-        return bound, closest
+                bound, closest = update_closest(self.things[i], v, bound, closest)
+            return closest, bound
 

@@ -129,7 +129,7 @@ def efficient_ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices):
     # Find bounds and compute the closest point to the rigid body for each point on the surface mesh
     for _, s in enumerate(d_ks):
         bound = np.linalg.norm(s - previous_closest)
-        closest.append(root.find_closest_point(s, bound, previous_closest))
+        closest.append(root.find_closest_point(s, bound, previous_closest)[0])
         previous_closest = closest[-1]
     c_ks = np.array(closest)
     # Compute the magnitude of the difference between the points

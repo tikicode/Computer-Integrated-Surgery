@@ -54,7 +54,7 @@ def test_update_closest():
     indices = np.array([[0, 1, 4], [0, 2, 4], [2, 3, 4], [1, 3, 4]])
     # Choose a point above the pyramid
     ts = np.array([Thang(mesh_vertices[indices[i]]) for i in range(len(indices))])
-    tester = ct.CovTreeNode(ts, len(ts))
+    tester = ct
     bound, closest = tester.update_closest(ts[0], np.array([[.5, .5, 1.5]]), 10, np.array([[0, 0, 0]]))
     # The closest point should be the top of the pyramid and the bound should be 0.5
     print(bound, closest)

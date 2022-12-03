@@ -4,22 +4,45 @@ from .icp import find_rigid_body_pose
 from .thang import Thang
 from .cov_tree import CovTreeNode
 from .registration import registration
-import time
 
 
 def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
-    # Build Covariance Tree
+    """Method for finding the rigid body pose using Efficient ICP
+    Parameters
+    _________
+    a_frames : np.ndarray
+        The xyz coordinates of A,,m,,,, body LED markers in tracker coordinates
+    b_frames : np.ndarray
+        The xyz coordinates of B body LED markers in tracker coordinates
+    a_tip : np.ndarray
+        The xyz coordinates of the tip in tracker coordinates
+    a_leds : np.ndarray
+        The xyz coordinates of A body LED markers in body coordinates
+    b_leds : np.ndarray
+        The xyz coordinates of B body LED markers in body coordinates
+    vertices : np.ndarray
+        The xyz coordinates of the vertices of the surface mesh
+    indices : np.ndarray
+        The indices of the vertices of the surface mesh
+    max_iter : int
+        The maximum number of iterations for the ICP algorithm
+
+    """
+    # build Covariance Tree
     ts = np.array([Thang(vertices[indices[i]]) for i in range(len(indices))])
     cov_tree = CovTreeNode(ts, len(ts))
 
-    # Initialize variables
+    # initialize variables
     n_iter = 0
     F_reg = Frame(np.eye(3), np.zeros(3))
-    thresh = 100
+    thresh = 10
     d_ks = find_rigid_body_pose(a_read, b_read, a_tip, a_leds, b_leds)
     c_ks = np.array([ts[i].corners[0] for i in range(len(ts))])
-    # Error Statistic
+    # error statistic
     eps_n = [0]
+    e_max = [0]
+    sig_n = [0]
+    # arrays of threshold points
     A = np.array([])
     B = np.array([])
     term_stack = []
@@ -28,17 +51,25 @@ def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
         s_ks = F_reg.compose_transform(d_ks)
         prev_A = len(A)
         prev_B = len(B)
-        new_c_ks, A, B = match_points(d_ks, ts, s_ks, cov_tree, thresh)
+        # find the closest points
+        new_c_ks, A, B = match_points(d_ks, c_ks, s_ks, cov_tree, thresh)
         c_ks = new_c_ks
+        # compute registration between d_ks and c_ks below the threshold
         F_reg = registration(A, B)
-        eps_n.append(compute_error_stats(F_reg, A, B))
+        eps_n_v, e_max_v, sig_n_v = compute_error_stats(F_reg, d_ks, c_ks)
+        eps_n.append(eps_n_v)
+        e_max.append(e_max_v)
+        sig_n.append(sig_n_v)
         n_iter += 1
         print("Iteration: ", n_iter, "Error: ", eps_n[-1])
         thresh = 3 * eps_n[-1]
-        if (len(A) < 0.5 * prev_A) and (len(B) < 0.5 * prev_B):
+        # if the number of points below the threshold drops significantly, increase the threshold
+        if (len(A) < 0.8 * prev_A) and (len(B) < 0.8 * prev_B):
             thresh = 15 * eps_n[-1]
-        if eps_n[-1] < 0.005:
+        # termination conditions
+        if eps_n[-1] < 0.005 and e_max[-1] < 0.01 and sig_n[-1] < 0.001:
             break
+        # terminate if the error does not drop significantly
         if n_iter > 1:
             change = eps_n[-1]/eps_n[-2]
             if 0.95 < change < 1:
@@ -50,33 +81,63 @@ def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
     return F_reg, c_ks, d_ks
 
 
-def match_points(d_ks, ts, s_ks, root, threshold):
+def match_points(d_ks, c_ks, s_ks, root, threshold):
+    """Method for finding the closest points on the mesh using the previous closest points
+    Parameters
+    _________
+    d_ks : np.ndarray
+        The xyz coordinates of the tip in tracker coordinates
+    c_ks : np.ndarray
+        The estimated xyz coordinates of the vertices of the surface mesh
+    s_ks : np.ndarray
+        The xyz coordinates of the tip in body coordinates
+    root : CovTreeNode
+        The root node of the covariance tree
+    threshold : float
+        The threshold for the distance between the closest points
+    """
     A = []
     B = []
     closest = []
-    prev_closest = ts[0].corners[0]
+    prev_closest = c_ks
     for i, s in enumerate(s_ks):
-        bound = np.linalg.norm(s - prev_closest)
-        st_s = time.time()
-        value = root.find_closest_point(s, bound, prev_closest)
-        et_s = time.time()
-        print("Search Time: ", i, et_s - st_s)
+        bound = np.linalg.norm(s - prev_closest[i])
+        value, bound = root.find_closest_point(s, bound, prev_closest[i])
         closest.append(value)
-        if np.linalg.norm(value - s) < threshold:
+        # If the distance between the closest points is below the threshold, add them to the arrays
+        if bound < threshold:
             A.append(d_ks[i])
             B.append(value)
-        prev_closest = closest[-1]
     return np.array(closest), np.array(A), np.array(B)
 
 
-def compute_error_stats(F_reg: Frame, A: np.ndarray, B: np.ndarray):
+def compute_error_stats(F_reg: Frame, d_ks: np.ndarray, c_ks: np.ndarray):
+    """Method for computing the error statistics
+    Parameters
+    _________
+    F_reg : Frame
+        The rigid body transformation between the tip and the surface mesh
+    d_ks : np.ndarray
+        The xyz coordinates of the tip in tracker coordinates
+    c_ks : np.ndarray
+        The estimated xyz coordinates of the vertices of the surface mesh
+    """
     E = []
     eps_n = 0
-    A_new = F_reg.compose_transform(A)
-    for i in range(len(A)):
-        E.append((B[i] - A_new[i]))
+    sig_n = 0
+    s_ks = F_reg.compose_transform(d_ks)
+    # compute the error between the tip and the surface mesh
+    for i in range(len(s_ks)):
+        E.append((c_ks[i] - s_ks[i]))
     E = np.array(E)
+    dot_E = []
     for i in range(len(E)):
-        eps_n += np.dot(E[i], E[i]) ** 0.5
+        dot_E.append(np.dot(E[i], E[i]))
+    for i in range(len(E)):
+        eps_n += dot_E[i] ** 0.5
+        sig_n += dot_E[i]
+    # compute the error statistics
     eps_n = eps_n / len(E)
-    return eps_n
+    e_max = np.max(dot_E) ** 0.5
+    sig_n = sig_n ** 0.5 / len(E)
+    return eps_n, e_max, sig_n
