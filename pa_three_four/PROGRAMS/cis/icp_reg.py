@@ -7,12 +7,12 @@ from .registration import registration
 
 
 def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
-    """Method for finding the rigid body pose using Efficient ICP
+    """Method for finding the rigid body pose using ICP
     Parameters
     _________
-    a_frames : np.ndarray
-        The xyz coordinates of A,,m,,,, body LED markers in tracker coordinates
-    b_frames : np.ndarray
+    a_read : np.ndarray
+        The xyz coordinates of A body LED markers in tracker coordinates
+    b_read : np.ndarray
         The xyz coordinates of B body LED markers in tracker coordinates
     a_tip : np.ndarray
         The xyz coordinates of the tip in tracker coordinates
@@ -25,8 +25,12 @@ def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
     indices : np.ndarray
         The indices of the vertices of the surface mesh
     max_iter : int
-        The maximum number of iterations for the ICP algorithm
+        The maximum number of iterations
 
+    Returns
+    _________
+    np.ndarray
+        The xyz coordinates of the pointer tip with respect to rigid body B
     """
     # build Covariance Tree
     ts = np.array([Thang(vertices[indices[i]]) for i in range(len(indices))])
@@ -76,7 +80,7 @@ def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
                 term_stack.append(change)
             elif len(term_stack) > 1:
                 term_stack.pop()
-            if len(term_stack) > 5:
+            if len(term_stack) > 10:
                 break
     return F_reg, c_ks, d_ks
 
