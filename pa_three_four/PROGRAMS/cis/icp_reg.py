@@ -6,7 +6,8 @@ from .cov_tree import CovTreeNode
 from .registration import registration
 
 
-def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
+def ICP(a_read: np.ndarray, b_read: np.ndarray, a_tip: np.ndarray, a_leds: np.ndarray, b_leds: np.ndarray,
+        vertices: np.ndarray, indices: np.ndarray, max_iter: int):
     """Method for finding the rigid body pose using ICP
     Parameters
     _________
@@ -85,7 +86,7 @@ def ICP(a_read, b_read, a_tip, a_leds, b_leds, vertices, indices, max_iter):
     return F_reg, c_ks, d_ks
 
 
-def match_points(d_ks, c_ks, s_ks, root, threshold):
+def match_points(d_ks: np.ndarray, c_ks: np.ndarray, s_ks: np.ndarray, root: CovTreeNode, threshold: float):
     """Method for finding the closest points on the mesh using the previous closest points
     Parameters
     _________

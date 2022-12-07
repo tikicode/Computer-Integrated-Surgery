@@ -49,3 +49,30 @@ ________________________
 The unit test cases are located directly under the TEST folder
 cd PROGRAMS
 Usage: python -m pytest
+
+PA4 Instructions for Running Individual Data
+____________________________________________
+The executable is located directly under the PROGRAMS folder.
+
+cd PROGRAMS
+Usage: python pa_four.py -n FILENAME -t SAMPLE_TYPE -o OUTPUT_DIRECTORY -d DATA_DIRECTORY
+
+Options:
+    --data_dir, -d TXT              The input data directory (default: DATA/)
+    --sample_readings_type -t TXT   The sample reading type (default: Debug)
+    --output_dir -o TXT             The output directory (default: ../OUTPUT/PA3)
+    --name -n TXT                   The file name (default: PA3-A-Debug)
+
+Example: python pa_three.py -n PA4-H -t Unknown
+
+PA4 Instructions for Running All Data
+_____________________________________
+The shell script is localed directly under the PROGRAMS folder
+cd PROGRAMS
+Usage: /bin/bash pa4_run_all.sh
+
+Instructions for Testing
+________________________
+The unit test cases are located directly under the TEST folder
+cd PROGRAMS
+Usage: python -m pytest

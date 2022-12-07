@@ -131,7 +131,30 @@ def read_answer_pa3(fName: Path):
     np.ndarray
          Point clouds representing the xyz coordinates of the tip in CT coordinates
     """
-    text = pd.read_csv(fName, header=None, names=["d_xi", "d_yi", "d_zi", "c_xi", "c_yi", "c_zi", "mag_dif"], skiprows=1,
+    text = pd.read_csv(fName, header=None, names=["d_xi", "d_yi", "d_zi", "c_xi", "c_yi", "c_zi", "mag_dif"],
+                       skiprows=1,
+                       delim_whitespace=True)
+    ds = np.array(text[["d_xi", "d_yi", "d_zi"]][:])
+    cs = np.array(text[["c_xi", "c_yi", "c_zi"]][:])
+    mags = np.array(text["mag_dif"][:])
+    return ds, cs, mags
+
+
+def read_answer_pa4(fName: Path):
+    """Method for reading the answer file for PA4
+
+    Parameters
+    _________
+    fName : Path
+        The path of the answer file
+
+    Returns
+    _________
+    np.ndarray
+         Point clouds representing the xyz coordinates of the tip in CT coordinates
+    """
+    text = pd.read_csv(fName, header=None, names=["d_xi", "d_yi", "d_zi", "c_xi", "c_yi", "c_zi", "mag_dif"],
+                       skiprows=1,
                        delim_whitespace=True)
     ds = np.array(text[["d_xi", "d_yi", "d_zi"]][:])
     cs = np.array(text[["c_xi", "c_yi", "c_zi"]][:])

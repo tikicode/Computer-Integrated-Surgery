@@ -4,6 +4,7 @@ import cis.pc_io as io
 import cis.icp as icp
 import cis.icp_reg as ir
 import time
+import numpy as np
 
 
 @click.command()
@@ -14,7 +15,7 @@ import time
               default="../OUTPUT/PA4",
               help="Output directory")
 @click.option("--name", "name", "-n", default="PA4-A", help="Name of file")
-def main(data_dir, sample_readings_type, output_dir, name):
+def main(data_dir: str, sample_readings_type: str, output_dir: str, name: str):
     """Main method for PA4
 
     Parameters
@@ -53,7 +54,35 @@ def main(data_dir, sample_readings_type, output_dir, name):
     et_e = time.time()
 
     print(f"ICP took {et_e - st_e:.2f} seconds")
+    if sample_readings_type == "Debug":
+        mse(name, sample_readings_type, output_dir, c_ks)
     io.output_pa34(output_dir, name, s_ks, c_ks, mag_dif, len(a_read))
+
+
+def mse(name: str, sample_readings_type: str, output_dir: Path, c_ks: np.ndarray):
+    """Compute the mean squared error of our output compared to the given output
+    Parameters
+    ----------
+    name : str
+        The name of the data output file
+    sample_readings_type : str
+        The type of sample readings
+    output_dir : Path
+        The directory to output the data
+    c_ks : np.ndarray
+        The computed c_ks from ICP
+    """
+    data_dir = Path('DATA/')
+    answer_output = data_dir / f"{name}-{sample_readings_type}-Answer.txt"
+
+    _, correct_output, _ = io.read_answer_pa4(answer_output)
+    # Compute the mean squared error
+    mse_cks = np.mean((c_ks - correct_output) ** 2)
+
+    f = open(f"{output_dir}/{name}-mse.txt", 'w')
+    f.write('{0}\n'.format(name + "-mse.txt"))
+    f.write('MSE of Our Output vs Correct Output: {0} \n'.format(format(mse_cks, '.4f')))
+    f.close()
 
 
 if __name__ == "__main__":
