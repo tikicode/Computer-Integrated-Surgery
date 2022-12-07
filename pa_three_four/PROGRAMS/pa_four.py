@@ -55,11 +55,11 @@ def main(data_dir: str, sample_readings_type: str, output_dir: str, name: str):
 
     print(f"ICP took {et_e - st_e:.2f} seconds")
     if sample_readings_type == "Debug":
-        mse(name, sample_readings_type, output_dir, c_ks)
+        mse(name, sample_readings_type, output_dir, c_ks, et_e - st_e)
     io.output_pa34(output_dir, name, s_ks, c_ks, mag_dif, len(a_read))
 
 
-def mse(name: str, sample_readings_type: str, output_dir: Path, c_ks: np.ndarray):
+def mse(name: str, sample_readings_type: str, output_dir: Path, c_ks: np.ndarray, icp_time: float):
     """Compute the mean squared error of our output compared to the given output
     Parameters
     ----------
@@ -71,6 +71,8 @@ def mse(name: str, sample_readings_type: str, output_dir: Path, c_ks: np.ndarray
         The directory to output the data
     c_ks : np.ndarray
         The computed c_ks from ICP
+    icp_time : float
+        The time it took to run ICP
     """
     data_dir = Path('DATA/')
     answer_output = data_dir / f"{name}-{sample_readings_type}-Answer.txt"
@@ -82,6 +84,7 @@ def mse(name: str, sample_readings_type: str, output_dir: Path, c_ks: np.ndarray
     f = open(f"{output_dir}/{name}-mse.txt", 'w')
     f.write('{0}\n'.format(name + "-mse.txt"))
     f.write('MSE of Our Output vs Correct Output: {0} \n'.format(format(mse_cks, '.4f')))
+    f.write('Time for Efficient ICP: {0} seconds \n'.format(format(icp_time, '.4f')))
     f.close()
 
 

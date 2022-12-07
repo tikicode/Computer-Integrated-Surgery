@@ -1,2 +1,3 @@
 PA4-F-mse.txt
 MSE of Our Output vs Correct Output: 0.0002 
+Time for Efficient ICP: 92.9710 seconds 
