@@ -1,0 +1,4 @@
+pa1-debug-f-mse.txt
+MSE of EM pivot post position: 0.0001 
+MSE of Optical pivot post position: 48.7938 
+MSE of calculated EM observed coordinates: 1.0931 

@@ -3,6 +3,7 @@ from pathlib import Path
 import cis.pa2probs as pa2
 import cis.prob456 as pa1
 import numpy as np
+import cis.file_rw as io
 
 
 @click.command()
@@ -10,7 +11,7 @@ import numpy as np
 @click.option("--output_dir", "output_dir", "-o",
               default="../OUTPUT/PA2",
               help="Output directory")
-@click.option("--name", "name", "-n", default="pa2-unknown-j", help="Name of file")
+@click.option("--name", "name", "-n", default="pa2-debug-a", help="Name of file")
 def main(data_dir, output_dir, name):
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
@@ -42,6 +43,8 @@ def main(data_dir, output_dir, name):
 
     write_output_one(c_exp, probe, beacon, output_dir, name)
     write_output_two(b_nav, output_dir, name)
+    if name.find("debug") != -1:
+        mse(c_exp, probe, beacon, b_nav, output_dir, data_dir, name)
 
 
 def write_output_one(c_exp, probe, beacon, output_dir, name):
@@ -88,6 +91,52 @@ def write_output_two(b_nav, output_dir, name):
         f.write('{0},    {1},    {2}\n'.format(format(b_nav[i][0], '.2f'),
                                                format(b_nav[i][1], '.2f'),
                                                format(b_nav[i][2], '.2f')))
+    f.close()
+
+
+def mse(c_exp: np.ndarray, probe: np.ndarray, beacon: np.ndarray, b_nav: np.ndarray, output_dir: Path, data_dir: Path,
+        name: str):
+    """Method for calculating the mean squared error
+
+    Parameters
+    _________
+    c_exp : np.ndarray
+        The solution to problem 4, expected values for a distortion calibration DATA set
+    probe : np.ndarray
+        The solution to problem 5, position of the EM probe relative to the EM tracker base
+    beacon : np.ndarray
+        The solution to problem 6, position of the optical tracker beacon in EM tracker coordinates for each
+        observation frame of optical tracker DATA
+    b_nav : np.ndarray
+        The solution to problem 7, position of the EM probe in EM tracker coordinates for each observation
+        frame of EM tracker DATA
+    output_dir : str
+        The directory to write the output files
+    data_dir : str
+        The directory containing the input files
+    name : str
+        The name of the input files
+    """
+    ans1 = data_dir / f"{name}-output1.txt"
+    ans2 = data_dir / f"{name}-output2.txt"
+    post_em, post_opt, cs = io.get_answer_pa1(ans1)
+    post_nav = io.get_answer_pa2(ans2)
+    mse_post_em = np.mean((probe - post_em) ** 2)
+    mse_post_opt = np.mean((beacon - post_opt) ** 2)
+    c_exp_pc = []
+    for i in range(len(c_exp)):
+        c_exp_pc.append(c_exp[i].points)
+    c_exp = np.array(c_exp_pc)
+    c_exp = c_exp.reshape((3375, 3))
+    mse_cs = np.mean((c_exp - cs) ** 2)
+    mse_nav = np.mean((b_nav - post_nav) ** 2)
+
+    f = open(f"{output_dir}/{name}-mse.txt", 'w')
+    f.write('{0}\n'.format(name + "-mse.txt"))
+    f.write('MSE of EM pivot post position: {0} \n'.format(format(mse_post_em, '.4f')))
+    f.write('MSE of Optical pivot post position: {0} \n'.format(format(mse_post_opt, '.4f')))
+    f.write('MSE of calculated EM observed coordinates: {0} \n'.format(format(mse_cs, '.4f')))
+    f.write('MSE of calculated EM navigation points: {0} \n'.format(format(mse_nav, '.4f')))
     f.close()
 
 

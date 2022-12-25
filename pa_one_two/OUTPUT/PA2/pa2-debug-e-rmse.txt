@@ -1,2 +1,0 @@
-pa2-debug-e-rmse.txt
-RMSE 1: 1.26, RMSE 2: 191.18

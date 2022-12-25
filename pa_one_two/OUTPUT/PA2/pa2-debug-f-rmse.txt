@@ -1,2 +1,0 @@
-pa2-debug-f-rmse.txt
-RMSE 1: 0.98, RMSE 2: 253.97

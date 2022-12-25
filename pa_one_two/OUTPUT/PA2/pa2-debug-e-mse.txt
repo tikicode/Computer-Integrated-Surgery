@@ -1,0 +1,5 @@
+pa2-debug-e-mse.txt
+MSE of EM pivot post position: 12.3063 
+MSE of Optical pivot post position: 29.9177 
+MSE of calculated EM observed coordinates: 1.5722 
+MSE of calculated EM navigation points: 36550.8748 

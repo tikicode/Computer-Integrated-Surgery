@@ -4,7 +4,7 @@ from pathlib import Path
 from .point_set import PointCloud
 
 
-def getDataCalBody(fName: Path):
+def get_data_cal_body(fName: Path):
     """Method for collecting calibration object DATA
 
     Parameters
@@ -29,7 +29,7 @@ def getDataCalBody(fName: Path):
             PointCloud(np.array(text[["xi", "yi", "zi"]][ND + NA:])))
 
 
-def getDataCalReading(fName: Path):
+def get_data_cal_reading(fName: Path):
     """Method for collecting sensor values
 
     Parameters
@@ -60,7 +60,7 @@ def getDataCalReading(fName: Path):
     return D, A, C
 
 
-def getDataEMPivot(fName: Path):
+def get_data_EM_pivot(fName: Path):
     """Method for collecting EM sensor values
 
     Parameters
@@ -87,7 +87,7 @@ def getDataEMPivot(fName: Path):
     return G
 
 
-def getDataOptPivot(fName: Path):
+def get_data_opt_pivot(fName: Path):
     """Method for collecting optical sensor DATA
 
     Parameters
@@ -116,7 +116,7 @@ def getDataOptPivot(fName: Path):
     return D, H
 
 
-def getDataCTFids(fName: Path):
+def get_data_CT_fids(fName: Path):
     """Method for collecting CT fiducial coordinates
 
     Parameters
@@ -138,7 +138,7 @@ def getDataCTFids(fName: Path):
     return Bi
 
 
-def getDataEMFids(fName: Path):
+def get_data_EM_fids(fName: Path):
     """Method for collecting DATA in which the probe is in contact with corresponding CT fiducials
 
     Parameters
@@ -165,7 +165,7 @@ def getDataEMFids(fName: Path):
     return G
 
 
-def getDataEMNav(fName: Path):
+def get_data_EM_nav(fName: Path):
     """Method for collecting DATA defining test points of the probe tip
 
     Parameters
@@ -178,9 +178,43 @@ def getDataEMNav(fName: Path):
     List of PointSet
         Point cloud describing test points of the probe that need to be translated to CT coordinates
     """
-    return getDataEMFids(fName)
+    return get_data_EM_fids(fName)
 
 
-def getOutput(fName: Path):
+def get_answer_pa2(fName: Path):
+    """Method for collecting DATA defining the answer to PA2
+
+    Parameters
+    _________
+    fName : Path
+        The name of the DATA file
+
+    Returns
+    _________
+    np.ndarray
+        The answer to PA2 output2
+    """
     text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"], skiprows=1)
     return np.array(text[["xi", "yi", "zi"]])
+
+
+def get_answer_pa1(fName: Path):
+    """Method for collecting DATA defining the answer to PA1
+
+    Parameters
+    _________
+    fName : Path
+        The name of the DATA file
+
+    Returns
+    _________
+    np.ndarray
+        The answer to PA1/PA2 output1
+    """
+    text = pd.read_csv(fName, header=None, names=["xi", "yi", "zi"],
+                       skiprows=1)
+    arr = np.array(text[["xi", "yi", "zi"]][:], dtype=float)
+    post_em = arr[0]
+    post_opt = arr[1]
+    cs = arr[2:]
+    return post_em, post_opt, cs

@@ -16,6 +16,7 @@ test.test_thang : This file contains the test cases for the Thang(Thing) class
 
 pa3_run_all.sh : Shell script to run find the output for all datasets once
 pa_three.py : The executable Program for this project
+pa_four.py: The executable program for the second part of this project
 
 Setup
 ______

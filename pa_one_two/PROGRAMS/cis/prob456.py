@@ -1,10 +1,10 @@
 from .point_set import PointCloud
 from .point_set import registration
 from .pivot_cal import pivot
-from .file_rw import getDataOptPivot
-from .file_rw import getDataEMPivot
-from .file_rw import getDataCalBody
-from .file_rw import getDataCalReading
+from .file_rw import get_data_opt_pivot
+from .file_rw import get_data_EM_pivot
+from .file_rw import get_data_cal_body
+from .file_rw import get_data_cal_reading
 
 
 def prob_four(cal_body, cal_reading):
@@ -23,8 +23,8 @@ def prob_four(cal_body, cal_reading):
         The expected values for the distortion calibration DATA
     """
     #get the points from the input files
-    d_points, a_points, c_points = getDataCalBody(cal_body)
-    D_points, A_points, C_points = getDataCalReading(cal_reading)
+    d_points, a_points, c_points = get_data_cal_body(cal_body)
+    D_points, A_points, C_points = get_data_cal_reading(cal_reading)
     c_exp = []
     
     #iterate through each of the frames and compute Ci to append to C_exp
@@ -50,7 +50,7 @@ def prob_five(em_pivot):
     np.ndarray
         The position of the EM probe relative to the EM tracker base
     """
-    em_data = getDataEMPivot(em_pivot)
+    em_data = get_data_EM_pivot(em_pivot)
     tip_in_tool, _ = pivot(em_data)
     return tip_in_tool
 
@@ -71,8 +71,8 @@ def prob_six(opt_pivot, cal_body):
         The solution to problem 6, position of the optical tracker beacon in EM tracker coordinates for each
         observation frame of optical tracker DATA
     """
-    opt_D, opt_H = getDataOptPivot(opt_pivot)
-    d_points, a_points, c_points = getDataCalBody(cal_body)
+    opt_D, opt_H = get_data_opt_pivot(opt_pivot)
+    d_points, a_points, c_points = get_data_cal_body(cal_body)
     FD = registration(opt_D[0].points, d_points.points)
     for i in range(len(opt_H)):
         opt_H[i] = PointCloud(FD.compose_transform(opt_H[i].points))
