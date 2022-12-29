@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def remove_distortion(point_set, coefficient, deg, q_min, q_max, q_exp_min, q_exp_max):
+def correct_distortion(point_set, coefficient, deg, q_min, q_max, q_exp_min, q_exp_max):
     """Method to remove distortion from the point set
 
     Parameters

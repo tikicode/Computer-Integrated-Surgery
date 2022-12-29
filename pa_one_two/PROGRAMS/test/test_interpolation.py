@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from pa_one_two.PROGRAMS.cis.interpolation import bernstein, min_max, scale_to_box, unscale, bernstein_c_ij, \
-    remove_distortion
+    correct_distortion
 
 
 def test_bernstein():

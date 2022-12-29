@@ -1,6 +1,6 @@
 import numpy as np
 
-from .interpolation import remove_distortion, bernstein_c_ij
+from .interpolation import correct_distortion, bernstein_c_ij
 from .point_set import PointCloud
 from .point_set import registration
 from .pivot_cal import pivot
@@ -39,16 +39,20 @@ def prob_three(cal_reading, em_pivot, c_exp):
         The maximum values for the expected data
     """
     D, A, C = get_data_cal_reading(cal_reading)
+    print(C[1].points.shape)
     em_pivot = get_data_EM_pivot(em_pivot)
     pts_em = em_pivot[0].points.shape[0]
     c = np.zeros(shape=(len(C) * C[0].points.shape[0], 3))
     for i in range(len(C)):
         index = C[0].points.shape[0] * i
         c[index:index + C[0].points.shape[0]] = C[i].points
+    print(c.shape)
+    print(c_exp.shape)
+    print(np.mean((c-c_exp) ** 2))
 
     # compute bernstein coefficients
     coefficients, q_min, q_max, q_exp_min, q_exp_max = bernstein_c_ij(c, c_exp, 5)
-    em_pivot_undistorted_reg = remove_distortion(em_pivot, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)
+    em_pivot_undistorted_reg = correct_distortion(em_pivot, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)
     em_pivot_undistorted = em_pivot_undistorted_reg.reshape((len(em_pivot), len(em_pivot[0].points), 3))
     em_pivot_undistorted_ps = []
 
@@ -102,7 +106,7 @@ def prob_four(em_fids, q_min, q_max, q_exp_min, q_exp_max, coefficients, p_tip_e
         The maximum values for the expected data
     """
     em_fids = get_data_EM_fids(em_fids)
-    em_fids_undistorted = remove_distortion(em_fids, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max).\
+    em_fids_undistorted = correct_distortion(em_fids, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max).\
         reshape((len(em_fids), len(em_fids[0].points), 3))
     g0 = np.mean(em_pivot_undistorted, axis=1)[0]
     g_j = (em_pivot_undistorted[0] - g0)
@@ -167,7 +171,7 @@ def prob_six(em_nav, em_pivot_undistorted, p_tip_em, F_reg, coefficients, q_min,
         The located em navigation data
     """
     em_nav = get_data_EM_pivot(em_nav)
-    em_nav_undistorted = remove_distortion(em_nav, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)\
+    em_nav_undistorted = correct_distortion(em_nav, coefficients, 5, q_min, q_max, q_exp_min, q_exp_max)\
         .reshape((len(em_nav), len(em_nav[0].points), 3))
     g0 = np.mean(em_pivot_undistorted, axis=1)[0]
     g_j = em_pivot_undistorted[0] - g0

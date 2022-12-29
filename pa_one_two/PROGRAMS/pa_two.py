@@ -11,8 +11,19 @@ import cis.file_rw as io
 @click.option("--output_dir", "output_dir", "-o",
               default="../OUTPUT/PA2",
               help="Output directory")
-@click.option("--name", "name", "-n", default="pa2-debug-a", help="Name of file")
+@click.option("--name", "name", "-n", default="pa2-debug-e", help="Name of file")
 def main(data_dir, output_dir, name):
+    """Main method for running the program
+
+    Parameters
+    _________
+    data_dir : str
+        The directory containing the input files
+    output_dir : str
+        The directory to write the output files
+    name : str
+        The name of the input files
+    """
     data_dir = Path(data_dir)
     output_dir = Path(output_dir)
     if not output_dir.exists():
