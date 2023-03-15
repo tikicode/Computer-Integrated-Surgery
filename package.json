@@ -1,0 +1,12 @@
+{
+  "name": "computer-integrated-surgery",
+  "version": "1.0.0",
+  "description": "Setup ______ Before running, please execute the following from the top level directory conda env -f create environment.yml conda activate CIS2022",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
